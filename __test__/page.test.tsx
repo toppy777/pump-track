@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import { Home } from '../src/app/page'
-import { User } from '../src/app/lib/users'
+import { User, Home } from '../src/app/lib/users'
  
 describe('Home', () => {
 
