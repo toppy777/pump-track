@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import { User, Home } from '../src/app/lib/users'
+import { User, GetUsers } from '../src/lib/users'
  
 describe('Home', () => {
 
@@ -18,7 +18,7 @@ describe('Home', () => {
     ]
 
   it('renders users', () => {
-    render(<Home users={users} />)
+    render(<GetUsers users={users} />)
     expect(screen.getByText('Users: 2')).toBeInTheDocument()
   })
 })

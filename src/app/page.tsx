@@ -1,6 +1,7 @@
-import { Home, getUsers } from "./lib/users";
+import { getUsers } from "../features/user/user";
+import Users from "../features/user/components/users";
 
 export default async function  UserContainer() {
   const users = await getUsers()
-  return <Home users={users} />
+  return <Users users={users} />
 }
