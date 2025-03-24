@@ -13,6 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.8.0",
     "@prisma/client": "^6.5.0",
     "next": "15.2.3",
     "next-auth": "^5.0.0-beta.25",
