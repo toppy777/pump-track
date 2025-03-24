@@ -52,6 +52,19 @@ async function main() {
       },
     },
   })
+
+  await prisma.exercise.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      user: { connect: { id: alice.id } },
+      name: 'ベンチプレス',
+      description: 'バーベルとベンチを用いて胸筋を鍛える',
+      muscles: {
+        create: [{ name: '大胸筋' }, { name: '前鋸筋' }, { name: '三角筋' }],
+      },
+    },
+  })
 }
 
 main()

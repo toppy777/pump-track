@@ -52,6 +52,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  exercises     Exercise[]
 
   @@map("users")
 }
@@ -68,7 +69,7 @@ model VerificationToken {
 model BodyArea {
   id          Int @id @default(autoincrement())
   name        String @unique
-  muscles     Muscle[] 
+  muscles     Muscle[]
 
   @@map("body_areas")
 }
@@ -76,8 +77,20 @@ model BodyArea {
 model Muscle {
   id          Int @id @default(autoincrement())
   name        String
-  bodyArea BodyArea @relation(fields: [bodyAreaId], references: [id])
-  bodyAreaId  Int @map("body_area_id")
+  bodyAreaId  Int? @map("body_area_id")
+  exercises   Exercise[]
+  bodyArea    BodyArea? @relation(fields: [bodyAreaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("muscles")
+}
+
+model Exercise {
+  userId      String @map("user_id")
+  id          Int @id @default(autoincrement())
+  name        String
+  description String?
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  muscles     Muscle[]
+
+  @@map("exercises")
 }
