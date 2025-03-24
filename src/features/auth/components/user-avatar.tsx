@@ -9,7 +9,7 @@ export default async function UserAvatar() {
   return (
     <div>
       {session.user.image && (
-        <Image src={session.user.image} alt="User Avatar" />
+        <Image src={session.user.image} alt="User Avatar" width={50} height={50} />
       )}
     </div>
   )
