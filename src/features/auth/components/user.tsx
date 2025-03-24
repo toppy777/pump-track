@@ -12,8 +12,8 @@ export default async function User(){
     return(
         <div>
             <UserAvatar />
-            <p>Name: {session.user.name ?? ""}</p>
-            <p>Email: {session.user.email ?? ""}</p>
+            <p>Name: {session && session.user ? session.user.name : ""}</p>
+            <p>Email: {session && session.user ? session.user.email : ""}</p>
             <SignOut />
         </div>
     )
