@@ -64,3 +64,20 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+model BodyArea {
+  id          Int @id @default(autoincrement())
+  name        String @unique
+  muscles     Muscle[] 
+
+  @@map("body_areas")
+}
+
+model Muscle {
+  id          Int @id @default(autoincrement())
+  name        String
+  bodyArea BodyArea @relation(fields: [bodyAreaId], references: [id])
+  bodyAreaId  Int @map("body_area_id")
+
+  @@map("muscles")
+}

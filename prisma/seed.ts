@@ -21,6 +21,37 @@ async function main() {
   })
 
   console.log({ alice, bob })
+
+  await prisma.bodyArea.upsert({
+    where: { name: '腕' },
+    update: {},
+    create: {
+      name: '腕',
+      muscles: {
+        create: [
+          { name: '上腕二頭筋' },
+          { name: '上腕三頭筋' },
+          { name: '前腕' },
+        ],
+      },
+    },
+  })
+
+  await prisma.bodyArea.upsert({
+    where: { name: '背中' },
+    update: {},
+    create: {
+      name: '背中',
+      muscles: {
+        create: [
+          { name: '広背筋' },
+          { name: '僧帽筋' },
+          { name: '大円筋' },
+          { name: '脊柱起立筋' },
+        ],
+      },
+    },
+  })
 }
 
 main()
