@@ -1,8 +1,8 @@
-import { getUsers } from "@/features/user/user";
-import Users from "@/features/user/components/users";
-import Auth from "@/features/auth/components/auth";
+import Auth from '@/features/auth/components/auth'
+import Users from '@/features/user/components/users'
+import { getUsers } from '@/features/user/user'
 
-export default async function  UserContainer() {
+export default async function UserContainer() {
   const users = await getUsers()
   return (
     <div>

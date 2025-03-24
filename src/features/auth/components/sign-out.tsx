@@ -1,10 +1,10 @@
-import { signOut } from "@/features/auth/config"
- 
+import { signOut } from '@/features/auth/config'
+
 export default function SignOut() {
   return (
     <form
       action={async () => {
-        "use server"
+        'use server'
         await signOut()
       }}
     >
