@@ -7,6 +7,9 @@
   "jsxSingleQuote": false,
   "arrowParens": "always",
   "proseWrap": "preserve",
+  "objectWrap": "preserve",
   "bracketSpacing": true,
+  "bracketSameLine": false,
+  "jsxBracketSameLine:": false,
   "plugins": ["prettier-plugin-organize-imports"]
 }
