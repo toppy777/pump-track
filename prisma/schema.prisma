@@ -54,6 +54,7 @@ model User {
   sessions      Session[]
   exercises     Exercise[]
   exerciseGrops ExerciseGroup[]
+  trainings     Training[]
 
   @@map("users")
 }
@@ -93,6 +94,7 @@ model Exercise {
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   muscles     Muscle[]
   groups      ExerciseGroup[]
+  trainings   Training[]
 
   @@map("exercises")
 }
@@ -105,4 +107,29 @@ model ExerciseGroup {
   exercises   Exercise[]
 
   @@map("exercise_groups")
+}
+
+model Training {
+  userId      String @map("user_id")
+  exerciseId  Int? @map("exercise_id")
+  id          Int @id
+  comment     String?
+  createdAt   DateTime @default(now())
+  user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    Exercise? @relation(fields: [exerciseId], references: [id], onDelete: SetNull)
+  sets        Set[]
+
+  @@map("trainings")
+}
+
+model Set{
+  trainingId  Int @map("training_id")
+  id          Int @id
+  weight      Float?
+  reps        Int?
+  comment     String?
+  createdAt   DateTime @default(now())
+  training    Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+
+  @@map("sets")
 }

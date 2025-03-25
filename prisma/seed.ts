@@ -143,6 +143,72 @@ async function main() {
       },
     },
   })
+
+  await prisma.training.upsert({
+    where: { id: 1 },
+    update: {
+      user: { connect: { id: alice.id } },
+      exercise: { connect: { id: 1 } },
+      id: 1,
+      comment: '今日は疲れた',
+    },
+    create: {
+      user: { connect: { id: alice.id } },
+      exercise: { connect: { id: 1 } },
+      id: 1,
+      comment: '今日は疲れた',
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 1 },
+    update: {
+      training: { connect: { id: 1 } },
+      id: 1,
+      weight: 60,
+      reps: 10,
+      comment: '軽く感じた',
+    },
+    create: {
+      training: { connect: { id: 1 } },
+      id: 1,
+      weight: 60,
+      reps: 10,
+      comment: '軽く感じた',
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 2 },
+    update: {
+      training: { connect: { id: 1 } },
+      id: 2,
+      weight: 60,
+      reps: 7,
+    },
+    create: {
+      training: { connect: { id: 1 } },
+      id: 2,
+      weight: 60,
+      reps: 7,
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 3 },
+    update: {
+      training: { connect: { id: 1 } },
+      id: 3,
+      weight: 60,
+      reps: 5,
+    },
+    create: {
+      training: { connect: { id: 1 } },
+      id: 3,
+      weight: 60,
+      reps: 5,
+    },
+  })
 }
 
 main()
