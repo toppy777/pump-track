@@ -23,45 +23,123 @@ async function main() {
   console.log({ alice, bob })
 
   await prisma.bodyArea.upsert({
-    where: { name: '腕' },
-    update: {},
+    where: { id: 1 },
+    update: {
+      name: '胸',
+    },
     create: {
-      name: '腕',
-      muscles: {
-        create: [
-          { name: '上腕二頭筋' },
-          { name: '上腕三頭筋' },
-          { name: '前腕' },
-        ],
-      },
+      id: 1,
+      name: '胸',
     },
   })
 
   await prisma.bodyArea.upsert({
-    where: { name: '背中' },
-    update: {},
+    where: { id: 2 },
+    update: {
+      name: '肩',
+    },
     create: {
-      name: '背中',
-      muscles: {
-        create: [
-          { name: '広背筋' },
-          { name: '僧帽筋' },
-          { name: '大円筋' },
-          { name: '脊柱起立筋' },
-        ],
-      },
+      id: 2,
+      name: '肩',
+    },
+  })
+
+  await prisma.muscle.upsert({
+    where: { id: 1 },
+    update: {
+      name: '大胸筋 上部',
+      bodyArea: { connect: { id: 1 } },
+    },
+    create: {
+      id: 1,
+      name: '大胸筋 上部',
+      bodyArea: { connect: { id: 1 } },
+    },
+  })
+
+  await prisma.muscle.upsert({
+    where: { id: 2 },
+    update: {
+      name: '大胸筋 下部',
+      bodyArea: { connect: { id: 1 } },
+    },
+    create: {
+      id: 2,
+      name: '大胸筋 下部',
+      bodyArea: { connect: { id: 1 } },
+    },
+  })
+
+  await prisma.muscle.upsert({
+    where: { id: 3 },
+    update: {
+      name: '三角筋',
+      bodyArea: { connect: { id: 2 } },
+    },
+    create: {
+      id: 3,
+      name: '三角筋',
+      bodyArea: { connect: { id: 2 } },
     },
   })
 
   await prisma.exercise.upsert({
     where: { id: 1 },
-    update: {},
-    create: {
+    update: {
       user: { connect: { id: alice.id } },
       name: 'ベンチプレス',
       description: 'バーベルとベンチを用いて胸筋を鍛える',
       muscles: {
-        create: [{ name: '大胸筋' }, { name: '前鋸筋' }, { name: '三角筋' }],
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+    create: {
+      id: 1,
+      user: { connect: { id: alice.id } },
+      name: 'ベンチプレス',
+      description: 'バーベルとベンチを用いて胸筋を鍛える',
+      muscles: {
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+  })
+
+  await prisma.exercise.upsert({
+    where: { id: 2 },
+    update: {
+      user: { connect: { id: alice.id } },
+      name: 'ダンベルベンチプレス',
+      description: 'バーベルとベンチを用いて胸筋を鍛える',
+      muscles: {
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+    create: {
+      id: 2,
+      user: { connect: { id: alice.id } },
+      name: 'ダンベルベンチプレス',
+      description: 'バーベルとベンチを用いて胸筋を鍛える',
+      muscles: {
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      },
+    },
+  })
+
+  await prisma.exerciseGroup.upsert({
+    where: { id: 1 },
+    update: {
+      name: '胸トレ1',
+      user: { connect: { id: alice.id } },
+      exercises: {
+        connect: [{ id: 1 }, { id: 2 }],
+      },
+    },
+    create: {
+      id: 1,
+      name: '胸トレ1',
+      user: { connect: { id: alice.id } },
+      exercises: {
+        connect: [{ id: 1 }, { id: 2 }],
       },
     },
   })
