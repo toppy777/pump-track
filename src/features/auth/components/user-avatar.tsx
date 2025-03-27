@@ -10,7 +10,7 @@ export default async function UserAvatar() {
   if (!session?.user) return null
 
   return (
-    <Menu as="div" className="relative block text-left h-[100%]">
+    <Menu as="div" className="relative block text-left w-full h-full">
       <MenuButton className="flex w-full h-full justify-center rounded-full bg-white shadow-xs cursor-pointer">
         {session.user.image && (
           <Image
@@ -18,7 +18,7 @@ export default async function UserAvatar() {
             alt="User Avatar"
             width="500"
             height="500"
-            className="rounded-full w-[90%] y-[90%] hover:opacity-70 transition duration-150 ease-out block"
+            className="rounded-full w-[100%] h-[100%] hover:opacity-70 transition duration-150 ease-out block"
           />
         )}
       </MenuButton>
