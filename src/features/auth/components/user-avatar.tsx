@@ -10,34 +10,34 @@ export default async function UserAvatar() {
   if (!session?.user) return null
 
   return (
-    <div>
-      <Menu as="div" className="relative inline-block text-left pl-100">
-        <MenuButton className="inline-flex w-full justify-center rounded-full bg-white shadow-xs ">
-          {session.user.image && (
-            <Image
-              src={session.user.image}
-              alt="User Avatar"
-              width="50"
-              height="50"
-              className="user-avatar hover:opacity-70 transition delay-50 duration-50 ease-out"
-            />
-          )}
-        </MenuButton>
-        <MenuItems
-          transition
-          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in px-3 py-2"
-        >
-          <MenuItem as="div">
-            <p>{session && session.user ? session.user.name : ''}</p>
-          </MenuItem>
-          <MenuItem as="div">
-            <p>{session && session.user ? session.user.email : ''}</p>
-          </MenuItem>
-          <MenuItem>
-            <SignOut />
-          </MenuItem>
-        </MenuItems>
-      </Menu>
-    </div>
+    <Menu as="div" className="relative block text-left h-[100%]">
+      <MenuButton className="flex w-full h-full justify-center rounded-full bg-white shadow-xs cursor-pointer">
+        {session.user.image && (
+          <Image
+            src={session.user.image}
+            alt="User Avatar"
+            width="500"
+            height="500"
+            className="rounded-full w-[90%] y-[90%] hover:opacity-70 transition duration-150 ease-out block"
+          />
+        )}
+      </MenuButton>
+      <MenuItems
+        transition
+        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in px-3 py-2"
+      >
+        <MenuItem as="div">
+          <p className="font-bold">
+            {session && session.user ? session.user.name : ''}
+          </p>
+        </MenuItem>
+        <MenuItem as="div">
+          <p>{session && session.user ? session.user.email : ''}</p>
+        </MenuItem>
+        <MenuItem>
+          <SignOut />
+        </MenuItem>
+      </MenuItems>
+    </Menu>
   )
 }

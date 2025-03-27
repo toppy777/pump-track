@@ -10,9 +10,9 @@ export default function SignOut() {
     >
       <button
         type="submit"
-        className="w-full bg-white hover:bg-stone-200 transition delay-50 duration-50 ease-out px-10"
+        className="w-full bg-stone-500 text-white hover:bg-stone-400 transition duration-150 ease-out px-10 mt-2 mb-1 rounded-md cursor-pointer"
       >
-        Sign Out
+        Sign out
       </button>
     </form>
   )

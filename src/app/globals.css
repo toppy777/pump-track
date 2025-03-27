@@ -48,6 +48,14 @@ body {
 .header-top-link {
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
+  color: #292929;
+  transition: background-color 0.15s ease-out;
+  border-radius: 0.3rem;
+  text-decoration: none;
+}
+
+.header-top-link:hover {
+  background-color: #e9e9e9;
 }
 
 .header-about-link {
