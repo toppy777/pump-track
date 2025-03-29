@@ -1,4 +1,5 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
+import TrainingReport from '@/features/training/components/training-report'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { JSX } from 'react'
@@ -15,7 +16,10 @@ export default async function TrainingList() {
   })
 
   const trainingElements: JSX.Element[] = []
+  let trainingVolume = 0
   let totalVolume = 0
+  let totalSets = 0
+  let totalReps = 0
   trainings.forEach((training) => {
     const muscleNames: string[] = []
     let setCount: number = 0
@@ -25,8 +29,11 @@ export default async function TrainingList() {
     training.sets.forEach((set) => {
       const weight = set.weight
       const reps = set.reps
+      if (reps !== null) {
+        totalReps += reps
+      }
       const volume = weight !== null && reps !== null ? weight * reps : 0
-      totalVolume += volume
+      trainingVolume += volume
       setCount += 1
     })
     trainingElements.push(
@@ -34,14 +41,22 @@ export default async function TrainingList() {
         key={training.id}
         trainingName={training.exercise?.name || ''}
         bodyAreas={muscleNames}
-        volume={totalVolume}
+        volume={trainingVolume}
         sets={setCount}
       ></Training>,
     )
+    totalVolume += trainingVolume
+    totalSets += setCount
   })
 
   return (
     <div>
+      <TrainingReport
+        totalVolume={totalVolume}
+        trainingCount={trainings.length}
+        totalSets={totalSets}
+        totalReps={totalReps}
+      ></TrainingReport>
       <h1>Training List</h1>
       {trainingElements}
     </div>
@@ -63,7 +78,7 @@ function Training({
     <Card className="w-[30svw] h-full">
       <Link href="/trainings/1">
         <div className="px-[1svw] py-[1svh]">
-          <div className="flex flex-row">
+          <div className="flex flex-row justify-between">
             <div className="flex flex-col">
               <CardTitle className="pr-[3svw]">{trainingName}</CardTitle>
               <div>
