@@ -1,13 +1,15 @@
-import Auth from '@/features/auth/components/auth'
-import Users from '@/features/user/components/users'
-import { getUsers } from '@/features/user/user'
+import Header from '@/components/header'
+import Title from '@/components/title'
+import SignIn from '@/features/auth/components/sign-in'
 
-export default async function UserContainer() {
-  const users = await getUsers()
+export default async function Top() {
   return (
-    <div>
-      <Users users={users} />
-      <Auth />
-    </div>
+    <>
+      <Header />
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-9rem)]">
+        <Title />
+        <SignIn />
+      </div>
+    </>
   )
 }

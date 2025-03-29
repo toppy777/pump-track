@@ -150,13 +150,29 @@ async function main() {
       user: { connect: { id: alice.id } },
       exercise: { connect: { id: 1 } },
       id: 1,
-      comment: '今日は疲れた',
+      comment: '疲れた',
     },
     create: {
       user: { connect: { id: alice.id } },
       exercise: { connect: { id: 1 } },
       id: 1,
-      comment: '今日は疲れた',
+      comment: '疲れた',
+    },
+  })
+
+  await prisma.training.upsert({
+    where: { id: 2 },
+    update: {
+      user: { connect: { id: alice.id } },
+      exercise: { connect: { id: 2 } },
+      id: 2,
+      comment: '完璧なトレーニングだった',
+    },
+    create: {
+      user: { connect: { id: alice.id } },
+      exercise: { connect: { id: 2 } },
+      id: 2,
+      comment: '完璧なトレーニングだった',
     },
   })
 
@@ -207,6 +223,54 @@ async function main() {
       id: 3,
       weight: 60,
       reps: 5,
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 4 },
+    update: {
+      training: { connect: { id: 2 } },
+      id: 4,
+      weight: 20,
+      reps: 10,
+    },
+    create: {
+      training: { connect: { id: 2 } },
+      id: 4,
+      weight: 20,
+      reps: 10,
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 5 },
+    update: {
+      training: { connect: { id: 2 } },
+      id: 5,
+      weight: 20,
+      reps: 10,
+    },
+    create: {
+      training: { connect: { id: 2 } },
+      id: 5,
+      weight: 20,
+      reps: 10,
+    },
+  })
+
+  await prisma.set.upsert({
+    where: { id: 6 },
+    update: {
+      training: { connect: { id: 2 } },
+      id: 6,
+      weight: 20,
+      reps: 8,
+    },
+    create: {
+      training: { connect: { id: 2 } },
+      id: 6,
+      weight: 20,
+      reps: 8,
     },
   })
 }

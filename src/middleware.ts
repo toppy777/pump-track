@@ -5,7 +5,11 @@ export const config = {
 }
 
 export default auth((req) => {
-  if (!req.auth && req.nextUrl.pathname !== '/') {
+  if (
+    !req.auth &&
+    req.nextUrl.pathname !== '/' &&
+    req.nextUrl.pathname !== '/about'
+  ) {
     return Response.redirect(req.nextUrl.origin)
   }
 })
