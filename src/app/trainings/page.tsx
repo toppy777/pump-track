@@ -1,5 +1,5 @@
 import Header from '@/components/header'
-import TrainingList from '@/features/training/components/training-list'
+import TrainingList from '@/features/training/components/TrainingList'
 
 export default function Trainings() {
   return (

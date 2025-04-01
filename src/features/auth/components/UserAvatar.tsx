@@ -1,4 +1,4 @@
-import SignOut from '@/features/auth/components/sign-out'
+import SignOut from '@/features/auth/components/SignOut'
 import { auth } from '@/features/auth/config'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Image from 'next/image'

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
-import TrainingReport from '@/features/training/components/training-report'
+import TrainingReport from '@/features/training/components/TrainingReport'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { JSX } from 'react'

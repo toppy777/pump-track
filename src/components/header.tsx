@@ -1,4 +1,4 @@
-import UserAvatar from '@/features/auth/components/user-avatar'
+import UserAvatar from '@/features/auth/components/UserAvatar'
 import { auth } from '@/features/auth/config'
 import Link from 'next/link'
 

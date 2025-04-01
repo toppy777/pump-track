@@ -18,10 +18,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
     session({ session, token }: { session: Session; token: JWT }) {
       if (
-        session.user !== undefined &&
-        typeof token.id === 'string' &&
-        token.id !== undefined &&
-        token.id !== null
+        session.user != null &&
+        token.id != null &&
+        typeof token.id === 'string'
       ) {
         session.user.id = token.id
       }

@@ -1,6 +1,6 @@
 import Header from '@/components/header'
 import Title from '@/components/title'
-import SignIn from '@/features/auth/components/sign-in'
+import SignIn from '@/features/auth/components/SignIn'
 
 export default async function Top() {
   return (

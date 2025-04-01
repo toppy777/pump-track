@@ -11,19 +11,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { addExercise } from '@/features/exercise/createExerciseAction'
+import { addExercise } from '@/features/exercise/create-exercise-action'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Muscle } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-// const muscles = [1, 2, 3, 4]
-
 const formSchema = z.object({
   name: z.string().min(1).max(100),
-  description: z.string().max(50).optional(),
-  muscles: z.array(z.number()).optional(),
+  description: z.string().max(50),
+  muscles: z.array(z.number()),
 })
 
 export default function CreateExercise({
@@ -47,21 +45,7 @@ export default function CreateExercise({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    let description: string = ''
-    if (values.description !== undefined) {
-      description = values.description
-    }
-
-    let muscles: number[] = []
-    if (values.muscles !== undefined) {
-      muscles = values.muscles
-    }
-
-    await addExercise({
-      name: values.name,
-      description: description,
-      muscles: muscles,
-    })
+    await addExercise(values)
   }
 
   return (

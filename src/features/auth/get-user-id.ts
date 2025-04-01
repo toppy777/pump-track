@@ -3,17 +3,17 @@ import { auth } from '@/features/auth/config'
 export default async function getUserId() {
   const session = await auth()
 
-  if (session === null) {
+  if (session == null) {
     console.log('セッションがnullです')
     return ''
   }
 
-  if (session.user === undefined) {
+  if (session.user == null) {
     console.log('セッションのユーザーがundefinedです')
     return ''
   }
 
-  if (session.user.id === undefined) {
+  if (session.user.id == null) {
     console.log('セッションのユーザーIDがundefinedです')
     return ''
   }

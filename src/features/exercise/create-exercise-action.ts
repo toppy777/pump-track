@@ -1,5 +1,5 @@
 'use server'
-import getUserId from '@/features/auth/getUserId'
+import getUserId from '@/features/auth/get-user-id'
 import { prisma } from '@/lib/prisma'
 import { Exercise } from '@prisma/client'
 
