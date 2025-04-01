@@ -50,9 +50,15 @@ export default function CreateTraining({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    values.exercises.forEach(async (exercise) => {
-      await createTraining({ exerciseId: exercise })
-    })
+    try {
+      await Promise.all(
+        values.exercises.map((exercise) =>
+          createTraining({ exerciseId: exercise }),
+        ),
+      )
+    } catch (error) {
+      console.error('Failed to create trainings:', error)
+    }
   }
 
   return (
@@ -82,7 +88,6 @@ export default function CreateTraining({
                             <Checkbox
                               checked={field.value?.includes(exercise.id)}
                               onCheckedChange={(checked) => {
-                                console.log(field.value)
                                 return checked
                                   ? field.onChange([
                                       ...(field.value as number[]),
