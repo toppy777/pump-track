@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { addExercise } from '@/features/exercise/create-exercise-action'
+import { createExercise } from '@/features/exercise/create-exercise-action'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Muscle } from '@prisma/client'
 import { useEffect, useState } from 'react'
@@ -45,7 +45,7 @@ export default function CreateExercise({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await addExercise(values)
+    await createExercise(values)
   }
 
   return (
