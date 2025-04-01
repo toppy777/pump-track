@@ -1,18 +1,15 @@
 'use server'
+
 import getUserId from '@/features/auth/get-user-id'
 import { ActionResponse, handleError } from '@/features/common/common'
 import { prisma } from '@/lib/prisma'
-import { Exercise } from '@prisma/client'
+import { Training } from '@prisma/client'
 
-export async function createExercise({
-  name,
-  description,
-  muscles,
+export async function createTraining({
+  exerciseId,
 }: {
-  name: string
-  description: string
-  muscles: number[]
-}): Promise<ActionResponse<Exercise>> {
+  exerciseId: number
+}): Promise<ActionResponse<Training>> {
   const userId = await getUserId()
 
   if (userId === '') {
@@ -24,15 +21,13 @@ export async function createExercise({
   }
 
   try {
-    const newExercise = await prisma.exercise.create({
+    const newTraining = await prisma.training.create({
       data: {
         id: 1000,
-        name: name,
-        description: description,
-        muscles: {
-          connect: muscles.map((muscleId) => ({
-            id: muscleId,
-          })),
+        exercise: {
+          connect: {
+            id: exerciseId,
+          },
         },
         user: {
           connect: {
@@ -41,7 +36,7 @@ export async function createExercise({
         },
       },
     })
-    return { success: true, data: newExercise }
+    return { success: true, data: newTraining }
   } catch (error) {
     return handleError(error, '作成')
   }
