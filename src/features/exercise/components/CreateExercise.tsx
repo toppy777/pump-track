@@ -111,7 +111,10 @@ export default function CreateExercise({
                           onCheckedChange={(checked) => {
                             console.log(field.value)
                             return checked
-                              ? field.onChange([...field.value, muscle.id])
+                              ? field.onChange([
+                                  ...(field.value as number[]),
+                                  muscle.id,
+                                ])
                               : field.onChange(
                                   field.value?.filter(
                                     (value) => value !== muscle.id,

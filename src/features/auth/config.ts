@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import NextAuth from 'next-auth'
+import NextAuth, { Session } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import Google from 'next-auth/providers/google'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
@@ -15,8 +16,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return token
     },
-    session({ session, token }) {
-      session.user.id = token.id
+    session({ session, token }: { session: Session; token: JWT }) {
+      if (
+        session.user !== undefined &&
+        typeof token.id === 'string' &&
+        token.id !== undefined &&
+        token.id !== null
+      ) {
+        session.user.id = token.id
+      }
       return session
     },
   },
