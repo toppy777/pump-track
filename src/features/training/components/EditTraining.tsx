@@ -1,12 +1,20 @@
 'use client'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import deleteTrainingSet from '@/features/training/delete-training-set'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { CiMenuKebab } from 'react-icons/ci'
 import { z } from 'zod'
 
 const formSchema = z.object({
@@ -41,6 +49,13 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
     )
   }
 
+  // セットを削除する処理
+  async function handleDeleteSet(index: number) {
+    const updatedSets = sets.filter((_, i) => i !== index)
+    setSets(updatedSets)
+    await deleteTrainingSet({ setId: sets[index].id })
+  }
+
   async function onSubmit() {
     const updatedSets = getUpdatedSets()
     if (updatedSets.length > 0) {
@@ -63,7 +78,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
             {sets.map((set, index) => (
-              <div key={set.id}>
+              <div key={set.id} className="flex flex-row gap-2 w-[50svw]">
                 <Input
                   type="number"
                   placeholder="weight"
@@ -84,6 +99,16 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                   }
                 ></Input>
                 reps
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <CiMenuKebab />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => handleDeleteSet(index)}>
+                      削除
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ))}
           </div>
