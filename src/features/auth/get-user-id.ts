@@ -1,3 +1,5 @@
+'use server'
+
 import { auth } from '@/features/auth/config'
 
 export default async function getUserId() {

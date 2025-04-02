@@ -39,6 +39,7 @@ export default async function TrainingList() {
     trainingElements.push(
       <Training
         key={training.id}
+        trainingId={training.id}
         trainingName={training.exercise?.name || ''}
         bodyAreas={muscleNames}
         volume={trainingVolume}
@@ -64,11 +65,13 @@ export default async function TrainingList() {
 }
 
 function Training({
+  trainingId,
   trainingName,
   bodyAreas,
   volume,
   sets,
 }: {
+  trainingId: number
   trainingName: string
   bodyAreas: string[]
   volume: number
@@ -76,7 +79,7 @@ function Training({
 }) {
   return (
     <Card className="w-[30svw] h-full">
-      <Link href="/trainings/1">
+      <Link href={`/trainings/${trainingId}`}>
         <div className="px-[1svw] py-[1svh]">
           <div className="flex flex-row justify-between">
             <div className="flex flex-col">

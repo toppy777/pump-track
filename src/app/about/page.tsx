@@ -1,10 +1,14 @@
 import Header from '@/components/header'
 import Title from '@/components/title'
+import { auth } from '@/features/auth/config'
+import { Session } from 'next-auth'
 
-export default function About() {
+export default async function About() {
+  const session = await auth()
+
   return (
     <div>
-      <Header />
+      <Header session={session as Session} />
       <div className="flex flex-col mx-auto mt-[5svh]">
         <Title />
 
