@@ -36,7 +36,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   // 入力が変更されたときに特定のセットを更新
   function handleInputChange(index: number, field: string, value: string) {
     const updatedSets = [...sets]
-    updatedSets[index] = { ...updatedSets[index], [field]: value }
+    updatedSets[index] = { ...updatedSets[index], [field]: Number(value) }
     setSets(updatedSets)
   }
 
@@ -59,14 +59,15 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   async function onSubmit() {
     const updatedSets = getUpdatedSets()
     if (updatedSets.length > 0) {
-      updatedSets.forEach(async (updatedSet) => {
-        await updateTrainingSet({
-          id: Number(updatedSet.id),
-          weight: Number(updatedSet.weight),
-          reps: Number(updatedSet.reps),
-        })
-      })
-      console.log('Updated sets:', updatedSets)
+      await Promise.all(
+        updatedSets.map((updatedSet) =>
+          updateTrainingSet({
+            id: updatedSet.id,
+            weight: updatedSet.weight || 0,
+            reps: updatedSet.reps || 0,
+          }),
+        ),
+      )
     } else {
       console.log('No changes detected.')
     }
