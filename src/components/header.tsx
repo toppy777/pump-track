@@ -1,10 +1,10 @@
+'use client'
+
 import UserAvatar from '@/features/auth/components/UserAvatar'
-import { auth } from '@/features/auth/config'
+import { Session } from 'next-auth'
 import Link from 'next/link'
 
-export default async function Header() {
-  const session = await auth()
-
+export default function Header({ session }: { session: Session }) {
   return (
     <header className="h-[6svh]">
       <nav className="nav-bar flex items-center justify-between h-full">
@@ -19,7 +19,7 @@ export default async function Header() {
         </div>
         <div className="pr-[5svw] flex items-center h-[4svh]">
           {session !== null && session.user !== undefined ? (
-            <UserAvatar />
+            <UserAvatar session={session} />
           ) : (
             <Link href="/about" className="header-about-link header-el block">
               about

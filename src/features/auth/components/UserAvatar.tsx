@@ -1,12 +1,12 @@
+'use client'
+
 import SignOut from '@/features/auth/components/SignOut'
-import { auth } from '@/features/auth/config'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { Session } from 'next-auth'
 import Image from 'next/image'
 import './styles/auth.css'
 
-export default async function UserAvatar() {
-  const session = await auth()
-
+export default function UserAvatar({ session }: { session: Session }) {
   if (!session?.user) return null
 
   return (
