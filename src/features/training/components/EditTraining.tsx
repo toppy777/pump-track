@@ -51,9 +51,10 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
 
   // セットを削除する処理
   async function handleDeleteSet(index: number) {
+    const setId = sets[index].id
     const updatedSets = sets.filter((_, i) => i !== index)
     setSets(updatedSets)
-    await deleteTrainingSet({ setId: sets[index].id })
+    await deleteTrainingSet({ setId })
   }
 
   async function onSubmit() {
