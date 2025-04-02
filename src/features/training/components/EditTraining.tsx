@@ -8,10 +8,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import createTrainingSet from '@/features/training/create-training-set'
 import deleteTrainingSet from '@/features/training/delete-training-set'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiMenuKebab } from 'react-icons/ci'
@@ -23,7 +25,12 @@ const formSchema = z.object({
 })
 
 export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
+  const params = useParams()
   const [sets, setSets] = useState(initialSets)
+  const [newSet, setNewSet] = useState<{ weight?: number; reps?: number }>({
+    weight: undefined,
+    reps: undefined,
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,7 +41,11 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   })
 
   // 入力が変更されたときに特定のセットを更新
-  function handleInputChange(index: number, field: string, value: string) {
+  function handleInputChange(
+    index: number,
+    field: 'weight' | 'reps',
+    value: string,
+  ) {
     const updatedSets = [...sets]
     updatedSets[index] = { ...updatedSets[index], [field]: Number(value) }
     setSets(updatedSets)
@@ -57,7 +68,20 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
     await deleteTrainingSet({ setId })
   }
 
+  // 新しいセットを追加する処理
+  function handleNewSetChange(field: 'weight' | 'reps', value: string) {
+    setNewSet({ ...newSet, [field]: value === '' ? undefined : Number(value) })
+  }
+
   async function onSubmit() {
+    // 新規セット追加
+    if (newSet.weight !== undefined || newSet.reps !== undefined) {
+      const trainingId = Number(params.id)
+      const createdNewSet = await createTrainingSet({ trainingId, ...newSet })
+      setSets((prevSets) => [...prevSets, createdNewSet])
+      setNewSet({ weight: undefined, reps: undefined })
+    }
+
     const updatedSets = getUpdatedSets()
     if (updatedSets.length > 0) {
       await Promise.all(
@@ -113,6 +137,24 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 </DropdownMenu>
               </div>
             ))}
+            <div className="flex flex-row gap-2 w-[50svw]">
+              <Input
+                type="number"
+                placeholder="weight"
+                value={newSet.weight ?? ''}
+                name="weight"
+                onChange={(e) => handleNewSetChange('weight', e.target.value)}
+              ></Input>
+              kg
+              <Input
+                type="number"
+                placeholder="reps"
+                value={newSet.reps ?? ''}
+                name="reps"
+                onChange={(e) => handleNewSetChange('reps', e.target.value)}
+              ></Input>
+              reps
+            </div>
           </div>
           <button type="submit">保存</button>
         </form>
