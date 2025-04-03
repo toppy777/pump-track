@@ -16,13 +16,13 @@ export default async function TrainingList() {
   })
 
   const trainingElements: JSX.Element[] = []
-  let trainingVolume = 0
-  let totalVolume = 0
-  let totalSets = 0
-  let totalReps = 0
+  let totalVolume: number = 0
+  let totalSets: number = 0
+  let totalReps: number = 0
   trainings.forEach((training) => {
     const muscleNames: string[] = []
     let setCount: number = 0
+    let trainingVolume: number = 0
     training.exercise?.muscles.forEach((muscle) => {
       muscleNames.push(muscle.name)
     })
