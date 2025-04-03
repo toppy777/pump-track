@@ -88,7 +88,7 @@ model Muscle {
 
 model Exercise {
   userId      String @map("user_id")
-  id          Int @id
+  id          Int @id @default(autoincrement())
   name        String
   description String?
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -101,7 +101,7 @@ model Exercise {
 
 model ExerciseGroup {
   userId      String @map("user_id")
-  id          Int @id
+  id          Int @id @default(autoincrement())
   name        String
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
   exercises   Exercise[]
@@ -112,7 +112,7 @@ model ExerciseGroup {
 model Training {
   userId      String @map("user_id")
   exerciseId  Int? @map("exercise_id")
-  id          Int @id
+  id          Int @id @default(autoincrement())
   comment     String?
   createdAt   DateTime @default(now())
   user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
