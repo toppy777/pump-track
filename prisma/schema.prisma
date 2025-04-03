@@ -124,7 +124,7 @@ model Training {
 
 model Set{
   trainingId  Int @map("training_id")
-  id          Int @id
+  id          Int @id @default(autoincrement())
   weight      Float?
   reps        Int?
   comment     String?

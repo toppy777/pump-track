@@ -55,8 +55,8 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   function getUpdatedSets() {
     return sets.filter(
       (set, index) =>
-        set.weight !== initialSets[index].weight ||
-        set.reps !== initialSets[index].reps,
+        (set.weight ?? null) !== (initialSets[index].weight ?? null) ||
+        (set.reps ?? null) !== (initialSets[index].reps ?? null),
     )
   }
 
@@ -88,13 +88,11 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
         updatedSets.map((updatedSet) =>
           updateTrainingSet({
             id: updatedSet.id,
-            weight: updatedSet.weight || 0,
-            reps: updatedSet.reps || 0,
+            weight: updatedSet.weight ?? 0,
+            reps: updatedSet.reps ?? 0,
           }),
         ),
       )
-    } else {
-      console.log('No changes detected.')
     }
   }
 
@@ -108,7 +106,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 <Input
                   type="number"
                   placeholder="weight"
-                  defaultValue={set?.weight || 0}
+                  value={set?.weight ?? ''}
                   name="weight"
                   onChange={(e) =>
                     handleInputChange(index, 'weight', e.target.value)
@@ -118,7 +116,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 <Input
                   type="number"
                   placeholder="reps"
-                  defaultValue={set?.reps || 0}
+                  value={set?.reps ?? ''}
                   name="reps"
                   onChange={(e) =>
                     handleInputChange(index, 'reps', e.target.value)

@@ -14,14 +14,13 @@ export default async function createTrainingSet({
 }): Promise<Set> {
   return await prisma.set.create({
     data: {
-      id: 1000,
       training: {
         connect: {
           id: trainingId,
         },
       },
-      weight: weight ? weight : null,
-      reps: reps ? reps : null,
+      weight: weight ?? null,
+      reps: reps ?? null,
     },
   })
 }
