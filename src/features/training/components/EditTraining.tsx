@@ -27,7 +27,10 @@ const formSchema = z.object({
 export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   const params = useParams()
   const [sets, setSets] = useState(initialSets)
-  const [newSet, setNewSet] = useState<{ weight?: number; reps?: number }>({
+  const [pendingSet, setPendingSet] = useState<{
+    weight?: number
+    reps?: number
+  }>({
     weight: undefined,
     reps: undefined,
   })
@@ -70,16 +73,25 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
 
   // 新しいセットを追加する処理
   function handleNewSetChange(field: 'weight' | 'reps', value: string) {
-    setNewSet({ ...newSet, [field]: value === '' ? undefined : Number(value) })
+    setPendingSet({
+      ...pendingSet,
+      [field]: value === '' ? undefined : Number(value),
+    })
   }
 
   async function onSubmit() {
     // 新規セット追加
-    if (newSet.weight !== undefined || newSet.reps !== undefined) {
+    if (pendingSet.weight !== undefined || pendingSet.reps !== undefined) {
+      if (Number.isNaN(Number(params.id))) {
+        return
+      }
       const trainingId = Number(params.id)
-      const createdNewSet = await createTrainingSet({ trainingId, ...newSet })
+      const createdNewSet = await createTrainingSet({
+        trainingId,
+        ...pendingSet,
+      })
       setSets((prevSets) => [...prevSets, createdNewSet])
-      setNewSet({ weight: undefined, reps: undefined })
+      setPendingSet({ weight: undefined, reps: undefined })
     }
 
     const updatedSets = getUpdatedSets()
@@ -139,7 +151,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
               <Input
                 type="number"
                 placeholder="weight"
-                value={newSet.weight ?? ''}
+                value={pendingSet.weight ?? ''}
                 name="weight"
                 onChange={(e) => handleNewSetChange('weight', e.target.value)}
               ></Input>
@@ -147,7 +159,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
               <Input
                 type="number"
                 placeholder="reps"
-                value={newSet.reps ?? ''}
+                value={pendingSet.reps ?? ''}
                 name="reps"
                 onChange={(e) => handleNewSetChange('reps', e.target.value)}
               ></Input>
