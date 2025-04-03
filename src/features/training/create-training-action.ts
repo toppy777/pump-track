@@ -23,7 +23,6 @@ export async function createTraining({
   try {
     const newTraining = await prisma.training.create({
       data: {
-        id: 1000,
         exercise: {
           connect: {
             id: exerciseId,

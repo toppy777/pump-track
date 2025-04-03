@@ -26,7 +26,6 @@ export async function createExercise({
   try {
     const newExercise = await prisma.exercise.create({
       data: {
-        id: 1000,
         name: name,
         description: description,
         muscles: {

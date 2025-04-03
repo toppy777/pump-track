@@ -4,9 +4,9 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { JSX } from 'react'
 
-export default async function TrainingList() {
+export default async function TrainingList({ userId }: { userId: string }) {
   const trainings = await prisma.training.findMany({
-    where: { user: { email: 'alice@prisma.io' } },
+    where: { user: { id: userId } },
     include: {
       exercise: {
         include: { muscles: { include: { bodyArea: true } } },
