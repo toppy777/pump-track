@@ -8,10 +8,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import createTrainingSet from '@/features/training/create-training-set'
 import deleteTrainingSet from '@/features/training/delete-training-set'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiMenuKebab } from 'react-icons/ci'
@@ -23,7 +25,15 @@ const formSchema = z.object({
 })
 
 export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
+  const params = useParams()
   const [sets, setSets] = useState(initialSets)
+  const [pendingSet, setPendingSet] = useState<{
+    weight?: number
+    reps?: number
+  }>({
+    weight: undefined,
+    reps: undefined,
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,7 +44,11 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   })
 
   // 入力が変更されたときに特定のセットを更新
-  function handleInputChange(index: number, field: string, value: string) {
+  function handleInputChange(
+    index: number,
+    field: 'weight' | 'reps',
+    value: string,
+  ) {
     const updatedSets = [...sets]
     updatedSets[index] = { ...updatedSets[index], [field]: Number(value) }
     setSets(updatedSets)
@@ -44,8 +58,8 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   function getUpdatedSets() {
     return sets.filter(
       (set, index) =>
-        set.weight !== initialSets[index].weight ||
-        set.reps !== initialSets[index].reps,
+        (set.weight ?? null) !== (initialSets[index].weight ?? null) ||
+        (set.reps ?? null) !== (initialSets[index].reps ?? null),
     )
   }
 
@@ -57,20 +71,40 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
     await deleteTrainingSet({ setId })
   }
 
+  // 新しいセットを追加する処理
+  function handleNewSetChange(field: 'weight' | 'reps', value: string) {
+    setPendingSet({
+      ...pendingSet,
+      [field]: value === '' ? undefined : Number(value),
+    })
+  }
+
   async function onSubmit() {
+    // 新規セット追加
+    if (pendingSet.weight !== undefined || pendingSet.reps !== undefined) {
+      if (Number.isNaN(Number(params.id))) {
+        return
+      }
+      const trainingId = Number(params.id)
+      const createdNewSet = await createTrainingSet({
+        trainingId,
+        ...pendingSet,
+      })
+      setSets((prevSets) => [...prevSets, createdNewSet])
+      setPendingSet({ weight: undefined, reps: undefined })
+    }
+
     const updatedSets = getUpdatedSets()
     if (updatedSets.length > 0) {
       await Promise.all(
         updatedSets.map((updatedSet) =>
           updateTrainingSet({
             id: updatedSet.id,
-            weight: updatedSet.weight || 0,
-            reps: updatedSet.reps || 0,
+            weight: updatedSet.weight ?? 0,
+            reps: updatedSet.reps ?? 0,
           }),
         ),
       )
-    } else {
-      console.log('No changes detected.')
     }
   }
 
@@ -84,7 +118,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 <Input
                   type="number"
                   placeholder="weight"
-                  defaultValue={set?.weight || 0}
+                  value={set?.weight ?? ''}
                   name="weight"
                   onChange={(e) =>
                     handleInputChange(index, 'weight', e.target.value)
@@ -94,7 +128,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 <Input
                   type="number"
                   placeholder="reps"
-                  defaultValue={set?.reps || 0}
+                  value={set?.reps ?? ''}
                   name="reps"
                   onChange={(e) =>
                     handleInputChange(index, 'reps', e.target.value)
@@ -113,6 +147,24 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 </DropdownMenu>
               </div>
             ))}
+            <div className="flex flex-row gap-2 w-[50svw]">
+              <Input
+                type="number"
+                placeholder="weight"
+                value={pendingSet.weight ?? ''}
+                name="weight"
+                onChange={(e) => handleNewSetChange('weight', e.target.value)}
+              ></Input>
+              kg
+              <Input
+                type="number"
+                placeholder="reps"
+                value={pendingSet.reps ?? ''}
+                name="reps"
+                onChange={(e) => handleNewSetChange('reps', e.target.value)}
+              ></Input>
+              reps
+            </div>
           </div>
           <button type="submit">保存</button>
         </form>
