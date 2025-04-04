@@ -1,22 +1,27 @@
 import Header from '@/components/header'
 import { auth } from '@/features/auth/config'
 import getExercises from '@/features/exercise/get-exercises'
-import Calendar from '@/features/training/components/Calendar'
-import CreateTraining from '@/features/training/components/CreateTraining'
-import TrainingList from '@/features/training/components/TrainingList'
+import TrainingComponents from '@/features/training/components/TrainingComponents'
+import getTrainings from '@/features/training/get-trainings'
 import { Session } from 'next-auth'
 
 export default async function Trainings() {
   const exercises = await getExercises()
   const session = await auth()
   const userId = session?.user?.id
+  const trainings = await getTrainings({
+    userId: userId as string,
+    selectedDate: new Date(),
+  })
 
   return (
     <div>
       <Header session={session as Session} />
-      <Calendar></Calendar>
-      <TrainingList userId={userId as string} />
-      <CreateTraining initialExercises={exercises} />
+      <TrainingComponents
+        userId={userId as string}
+        initialExercises={exercises}
+        initialTrainings={trainings}
+      />
     </div>
   )
 }
