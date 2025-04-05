@@ -8,18 +8,22 @@ import { JSX, useEffect, useState } from 'react'
 
 export default function TrainingList({
   userId,
-  initialTrainings,
   selectedDate,
+  shouldReflesh,
 }: {
   userId: string
-  initialTrainings: Training[]
   selectedDate: Date
+  shouldReflesh: boolean
 }) {
   const [trainings, setTrainings] = useState<Training[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      setTrainings(initialTrainings)
+      const fetchedTrainings = await getTrainings({
+        userId,
+        selectedDate,
+      })
+      setTrainings(fetchedTrainings)
     }
     fetchData()
   }, [])
@@ -27,21 +31,22 @@ export default function TrainingList({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tt = await getTrainings({
+        const fetchedTrainings = await getTrainings({
           userId,
           selectedDate,
         })
-        setTrainings(tt)
-        console.log('fetchData', tt)
+        setTrainings(fetchedTrainings)
       } catch (error) {
         console.error('Error fetching trainings:', error)
       }
     }
     fetchData()
-    console.log('ここは表示される')
-    console.log('selectedDate', selectedDate)
-  }, [userId, selectedDate])
+  }, [userId, selectedDate, shouldReflesh])
 
+  return <TrainingCardsAndReport trainings={trainings}></TrainingCardsAndReport>
+}
+
+function TrainingCardsAndReport({ trainings }: { trainings: Training[] }) {
   const trainingElements: JSX.Element[] = []
   let totalVolume: number = 0
   let totalSets: number = 0
@@ -76,7 +81,6 @@ export default function TrainingList({
     totalVolume += trainingVolume
     totalSets += setCount
   })
-
   return (
     <div>
       <TrainingReport
