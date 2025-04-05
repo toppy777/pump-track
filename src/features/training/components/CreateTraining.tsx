@@ -33,12 +33,12 @@ const formSchema = z.object({
 
 export default function CreateTraining({
   initialExercises,
-  shouldReflesh,
-  setShouldReflesh,
+  shouldRefresh,
+  setShouldRefresh,
 }: {
   initialExercises: Exercise[]
-  shouldReflesh: boolean
-  setShouldReflesh: (isOpen: boolean) => void
+  shouldRefresh: boolean
+  setShouldRefresh: (isOpen: boolean) => void
 }) {
   const [exercises, setExercises] = useState<Exercise[]>([])
 
