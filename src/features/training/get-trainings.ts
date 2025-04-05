@@ -16,7 +16,7 @@ export default async function getTrainings({
   userId: string
   selectedDate: Date
 }): Promise<Training[]> {
-  const today = selectedDate
+  const today = new Date(selectedDate)
   today.setHours(0, 0, 0, 0)
   const tomorrow = new Date(today)
   tomorrow.setDate(today.getDate() + 1)
