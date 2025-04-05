@@ -3,7 +3,6 @@
 import { Calendar as CalendarFromLibrary } from '@/components/ui/calendar'
 import { getWeek } from 'date-fns'
 import { ja } from 'date-fns/locale'
-import { useState } from 'react'
 import { Row, RowProps } from 'react-day-picker'
 import { SlArrowLeft, SlArrowRight } from 'react-icons/sl'
 
@@ -17,9 +16,8 @@ function CustomRow(props: customRowProps) {
 }
 
 type weekButtonProps = {
-  selected: Date | undefined
-  setSelected: (date: Date) => void
-  setSelectedWeekNumber: (weekNumber: number) => void
+  selectedDate: Date | undefined
+  setSelectedDate: (date: Date) => void
 }
 
 type controlWeekProps = weekButtonProps & {
@@ -29,38 +27,34 @@ type controlWeekProps = weekButtonProps & {
 
 function controlWeek({
   direction,
-  selected,
-  setSelected,
-  setSelectedWeekNumber,
+  selectedDate,
+  setSelectedDate,
   e,
 }: controlWeekProps) {
   e.stopPropagation()
-  const nextWeek = new Date(selected || new Date())
+  const nextWeekDate = new Date(selectedDate || new Date())
   if (direction === 'prev') {
-    nextWeek.setDate(nextWeek.getDate() - 7)
+    nextWeekDate.setDate(nextWeekDate.getDate() - 7)
   } else if (direction === 'next') {
-    nextWeek.setDate(nextWeek.getDate() + 7)
+    nextWeekDate.setDate(nextWeekDate.getDate() + 7)
   } else {
     console.error('Invalid direction')
     return
   }
-  setSelected(nextWeek)
-  setSelectedWeekNumber(getWeek(nextWeek))
+  setSelectedDate(nextWeekDate)
 }
 
 function PreviousWeekButton({
-  selected,
-  setSelected,
-  setSelectedWeekNumber,
+  selectedDate,
+  setSelectedDate,
 }: weekButtonProps) {
   return (
     <button
       onClick={(e) => {
         controlWeek({
           direction: 'prev',
-          selected,
-          setSelected,
-          setSelectedWeekNumber,
+          selectedDate: selectedDate,
+          setSelectedDate: setSelectedDate,
           e,
         })
       }}
@@ -71,19 +65,14 @@ function PreviousWeekButton({
   )
 }
 
-function NextWeekButton({
-  selected,
-  setSelected,
-  setSelectedWeekNumber,
-}: weekButtonProps) {
+function NextWeekButton({ selectedDate, setSelectedDate }: weekButtonProps) {
   return (
     <button
       onClick={(e) => {
         controlWeek({
           direction: 'next',
-          selected,
-          setSelected,
-          setSelectedWeekNumber,
+          selectedDate: selectedDate,
+          setSelectedDate: setSelectedDate,
           e,
         })
       }}
@@ -94,46 +83,54 @@ function NextWeekButton({
   )
 }
 
-export default function Calendar() {
-  const [selected, setSelected] = useState<Date | undefined>(new Date())
-  const [selectedWeekNumber, setSelectedWeekNumber] = useState<number>(
-    getWeek(new Date()),
-  )
-
+export default function Calendar({
+  selectedDate,
+  setSelectedDate,
+}: {
+  selectedDate: Date
+  setSelectedDate: (date: Date) => void
+}) {
   return (
     <div>
       <CalendarFromLibrary
         components={{
           Row: (props) => (
-            <CustomRow {...props} selectedWeekNumber={selectedWeekNumber} />
+            <CustomRow
+              {...props}
+              selectedWeekNumber={getWeek(selectedDate as Date)}
+            />
           ),
           IconLeft: () => (
             <PreviousWeekButton
-              selected={selected}
-              setSelected={setSelected}
-              setSelectedWeekNumber={setSelectedWeekNumber}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
             />
           ),
 
           IconRight: () => (
             <NextWeekButton
-              selected={selected}
-              setSelected={setSelected}
-              setSelectedWeekNumber={setSelectedWeekNumber}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
             />
           ),
         }}
         locale={ja}
         showOutsideDays
         mode="single"
-        selected={selected}
-        onSelect={setSelected}
-        month={selected}
+        selected={selectedDate}
+        onSelect={(date) => {
+          if (date === undefined) {
+            setSelectedDate(new Date())
+          } else {
+            setSelectedDate(date as Date)
+          }
+        }}
+        month={selectedDate}
       ></CalendarFromLibrary>
-      {selected && (
+      {selectedDate && (
         <div>
-          <h2>選択された日付: {selected.toLocaleDateString()}</h2>
-          <h2>選択された週番号: {getWeek(selected)}</h2>
+          <h2>選択された日付: {selectedDate.toLocaleDateString()}</h2>
+          <h2>選択された週番号: {getWeek(selectedDate)}</h2>
         </div>
       )}
     </div>

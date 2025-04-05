@@ -33,8 +33,12 @@ const formSchema = z.object({
 
 export default function CreateTraining({
   initialExercises,
+  shouldRefresh,
+  setShouldRefresh,
 }: {
   initialExercises: Exercise[]
+  shouldRefresh: boolean
+  setShouldRefresh: (isOpen: boolean) => void
 }) {
   const [exercises, setExercises] = useState<Exercise[]>([])
 
@@ -59,11 +63,18 @@ export default function CreateTraining({
     } catch (error) {
       console.error('Failed to create trainings:', error)
     }
+    setShouldRefresh(!shouldRefresh)
   }
 
   return (
     <div>
-      <Drawer>
+      <Drawer
+        onOpenChange={(open) => {
+          if (open === true) {
+            setShouldRefresh(false)
+          }
+        }}
+      >
         <DrawerTrigger>Open</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
@@ -72,7 +83,6 @@ export default function CreateTraining({
               新たなトレーニング記録を追加します
             </DrawerDescription>
           </DrawerHeader>
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-row gap-4">
@@ -109,11 +119,12 @@ export default function CreateTraining({
                   ></FormField>
                 ))}
               </div>
-              <Button type="submit">追加</Button>
+              <DrawerClose asChild>
+                <Button type="submit">追加</Button>
+              </DrawerClose>
             </form>
           </Form>
           <DrawerFooter>
-            <Button>Submit</Button>
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>

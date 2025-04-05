@@ -1,25 +1,46 @@
+'use client'
+
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import TrainingReport from '@/features/training/components/TrainingReport'
-import { prisma } from '@/lib/prisma'
+import getTrainings, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
-import { JSX } from 'react'
+import { JSX, useEffect, useState } from 'react'
 
-export default async function TrainingList({ userId }: { userId: string }) {
-  const trainings = await prisma.training.findMany({
-    where: { user: { id: userId } },
-    include: {
-      exercise: {
-        include: { muscles: { include: { bodyArea: true } } },
-      },
-      sets: true,
-    },
-  })
+export default function TrainingList({
+  userId,
+  selectedDate,
+  shouldRefresh,
+}: {
+  userId: string
+  selectedDate: Date
+  shouldRefresh: boolean
+}) {
+  const [trainings, setTrainings] = useState<Training[]>([])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedTrainings = await getTrainings({
+          userId,
+          selectedDate,
+        })
+        setTrainings(fetchedTrainings)
+      } catch (error) {
+        console.error('Error fetching trainings:', error)
+      }
+    }
+    fetchData()
+  }, [userId, selectedDate, shouldRefresh])
+
+  return <TrainingCardsAndReport trainings={trainings}></TrainingCardsAndReport>
+}
+
+function TrainingCardsAndReport({ trainings }: { trainings: Training[] }) {
   const trainingElements: JSX.Element[] = []
   let totalVolume: number = 0
   let totalSets: number = 0
   let totalReps: number = 0
-  trainings.forEach((training) => {
+  trainings?.forEach((training) => {
     const muscleNames: string[] = []
     let setCount: number = 0
     let trainingVolume: number = 0
@@ -37,24 +58,23 @@ export default async function TrainingList({ userId }: { userId: string }) {
       setCount += 1
     })
     trainingElements.push(
-      <Training
+      <TrainingCard
         key={training.id}
         trainingId={training.id}
         trainingName={training.exercise?.name || ''}
         bodyAreas={muscleNames}
         volume={trainingVolume}
         sets={setCount}
-      ></Training>,
+      ></TrainingCard>,
     )
     totalVolume += trainingVolume
     totalSets += setCount
   })
-
   return (
     <div>
       <TrainingReport
         totalVolume={totalVolume}
-        trainingCount={trainings.length}
+        trainingCount={trainings?.length || 0}
         totalSets={totalSets}
         totalReps={totalReps}
       ></TrainingReport>
@@ -64,7 +84,7 @@ export default async function TrainingList({ userId }: { userId: string }) {
   )
 }
 
-function Training({
+function TrainingCard({
   trainingId,
   trainingName,
   bodyAreas,
