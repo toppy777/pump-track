@@ -24,7 +24,7 @@ export default function TrainingComponents({
       <TrainingList
         userId={userId as string}
         selectedDate={selectedDate as Date}
-        shouldReflesh={shouldRefresh}
+        shouldRefresh={shouldRefresh}
       />
       <CreateTraining
         initialExercises={initialExercises}
