@@ -14,8 +14,7 @@ export default function TrainingComponents({
   initialExercises: Exercise[]
 }) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
-  const [shouldReflesh, setShoudRefresh] = useState(false)
-
+  const [shouldRefresh, setShouldRefresh] = useState(false)
   return (
     <div>
       <Calendar
