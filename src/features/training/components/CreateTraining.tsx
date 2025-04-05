@@ -63,7 +63,7 @@ export default function CreateTraining({
     } catch (error) {
       console.error('Failed to create trainings:', error)
     }
-    setShouldReflesh(!shouldReflesh)
+    setShouldRefresh(!shouldRefresh)
   }
 
   return (
@@ -71,7 +71,7 @@ export default function CreateTraining({
       <Drawer
         onOpenChange={(open) => {
           if (open === true) {
-            setShouldReflesh(false)
+            setShouldRefresh(false)
           }
         }}
       >

@@ -119,9 +119,10 @@ export default function Calendar({
         mode="single"
         selected={selectedDate}
         onSelect={(date) => {
-          setSelectedDate(date as Date)
           if (date === undefined) {
             setSelectedDate(new Date())
+          } else {
+            setSelectedDate(date as Date)
           }
         }}
         month={selectedDate}

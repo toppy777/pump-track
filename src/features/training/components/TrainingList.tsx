@@ -9,24 +9,13 @@ import { JSX, useEffect, useState } from 'react'
 export default function TrainingList({
   userId,
   selectedDate,
-  shouldRefresh,
+  shouldReflesh,
 }: {
   userId: string
   selectedDate: Date
   shouldReflesh: boolean
 }) {
   const [trainings, setTrainings] = useState<Training[]>([])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedTrainings = await getTrainings({
-        userId,
-        selectedDate,
-      })
-      setTrainings(fetchedTrainings)
-    }
-    fetchData()
-  }, [])
 
   useEffect(() => {
     const fetchData = async () => {

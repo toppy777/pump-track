@@ -24,12 +24,12 @@ export default function TrainingComponents({
       <TrainingList
         userId={userId as string}
         selectedDate={selectedDate as Date}
-        shouldReflesh={shouldReflesh}
+        shouldReflesh={shouldRefresh}
       />
       <CreateTraining
         initialExercises={initialExercises}
-        shouldReflesh={shouldReflesh}
-        setShouldReflesh={setShoudRefresh}
+        shouldRefresh={shouldRefresh}
+        setShouldRefresh={setShouldRefresh}
       />
     </div>
   )
