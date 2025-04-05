@@ -9,11 +9,11 @@ import { JSX, useEffect, useState } from 'react'
 export default function TrainingList({
   userId,
   selectedDate,
-  shouldReflesh,
+  shouldRefresh,
 }: {
   userId: string
   selectedDate: Date
-  shouldReflesh: boolean
+  shouldRefresh: boolean
 }) {
   const [trainings, setTrainings] = useState<Training[]>([])
 
@@ -30,7 +30,7 @@ export default function TrainingList({
       }
     }
     fetchData()
-  }, [userId, selectedDate, shouldReflesh])
+  }, [userId, selectedDate, shouldRefresh])
 
   return <TrainingCardsAndReport trainings={trainings}></TrainingCardsAndReport>
 }
