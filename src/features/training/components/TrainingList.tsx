@@ -9,7 +9,7 @@ import { JSX, useEffect, useState } from 'react'
 export default function TrainingList({
   userId,
   selectedDate,
-  shouldReflesh,
+  shouldRefresh,
 }: {
   userId: string
   selectedDate: Date
