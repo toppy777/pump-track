@@ -16,8 +16,15 @@ export default async function getTrainings({
   userId: string
   selectedDate: Date
 }): Promise<Training[]> {
+  // selectedDateはUTCで渡される前提
   const today = new Date(selectedDate)
-  today.setHours(0, 0, 0, 0)
+
+  // 日本時間の0時を基準にして、ターゲットの日付のUTC15時と翌日のUTC15時を取得
+  if (today.getHours() < 15) {
+    today.setDate(today.getDate() - 1)
+  }
+  today.setHours(15, 0, 0, 0)
+
   const tomorrow = new Date(today)
   tomorrow.setDate(today.getDate() + 1)
 
