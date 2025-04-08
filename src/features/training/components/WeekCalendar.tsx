@@ -4,11 +4,11 @@ import { ja } from 'date-fns/locale'
 import { Row, RowProps } from 'react-day-picker'
 import { SlArrowLeft, SlArrowRight } from 'react-icons/sl'
 
-type customRowProps = RowProps & {
+type CustomRowProps = RowProps & {
   selectedWeekNumber: number
 }
 
-function CustomRow(props: customRowProps) {
+function CustomRow(props: CustomRowProps) {
   if (props.selectedWeekNumber === props.weekNumber) return <Row {...props} />
   else return <></>
 }
