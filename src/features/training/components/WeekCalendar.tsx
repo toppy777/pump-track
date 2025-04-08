@@ -84,43 +84,49 @@ function NextWeekButton({ selectedDate, setSelectedDate }: weekButtonProps) {
 export default function WeekCalendar({
   selectedDate,
   setSelectedDate,
+  className,
 }: {
   selectedDate: Date
   setSelectedDate: (date: Date) => void
+  className?: string
 }) {
-  ;<CalendarFromLibrary
-    components={{
-      Row: (props) => (
-        <CustomRow
-          {...props}
-          selectedWeekNumber={getWeek(selectedDate as Date)}
-        />
-      ),
-      IconLeft: () => (
-        <PreviousWeekButton
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      ),
+  return (
+    <div className={`${className || ''}`}>
+      <CalendarFromLibrary
+        components={{
+          Row: (props) => (
+            <CustomRow
+              {...props}
+              selectedWeekNumber={getWeek(selectedDate as Date)}
+            />
+          ),
+          IconLeft: () => (
+            <PreviousWeekButton
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          ),
 
-      IconRight: () => (
-        <NextWeekButton
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      ),
-    }}
-    locale={ja}
-    showOutsideDays
-    mode="single"
-    selected={selectedDate}
-    onSelect={(date) => {
-      if (date === undefined) {
-        setSelectedDate(selectedDate)
-      } else {
-        setSelectedDate(date as Date)
-      }
-    }}
-    month={selectedDate}
-  ></CalendarFromLibrary>
+          IconRight: () => (
+            <NextWeekButton
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          ),
+        }}
+        locale={ja}
+        showOutsideDays
+        mode="single"
+        selected={selectedDate}
+        onSelect={(date) => {
+          if (date === undefined) {
+            setSelectedDate(selectedDate)
+          } else {
+            setSelectedDate(date as Date)
+          }
+        }}
+        month={selectedDate}
+      ></CalendarFromLibrary>
+    </div>
+  )
 }

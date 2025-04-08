@@ -25,6 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Exercise } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { IoAddCircleOutline } from 'react-icons/io5'
 import { z } from 'zod'
 
 const formSchema = z.object({
@@ -35,10 +36,12 @@ export default function CreateTraining({
   initialExercises,
   shouldRefresh,
   setShouldRefresh,
+  className,
 }: {
   initialExercises: Exercise[]
   shouldRefresh: boolean
   setShouldRefresh: (isOpen: boolean) => void
+  className?: string
 }) {
   const [exercises, setExercises] = useState<Exercise[]>([])
 
@@ -67,7 +70,7 @@ export default function CreateTraining({
   }
 
   return (
-    <div>
+    <div className={`${className || ''}`}>
       <Drawer
         onOpenChange={(open) => {
           if (open === true) {
@@ -75,8 +78,11 @@ export default function CreateTraining({
           }
         }}
       >
-        <DrawerTrigger className="cursor-pointer">
-          トレーニング記録追加
+        <DrawerTrigger asChild>
+          <Button className="[&_svg]:size-7 w-full h-full text-[1.2rem] cursor-pointer">
+            <IoAddCircleOutline className="size-1" />
+            <span>追加</span>
+          </Button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>

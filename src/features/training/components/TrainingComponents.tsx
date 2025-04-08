@@ -6,6 +6,7 @@ import TrainingList from '@/features/training/components/TrainingList'
 import TrainingReport, {
   TrainingReportProps,
 } from '@/features/training/components/TrainingReport'
+import WeekCalendar from '@/features/training/components/WeekCalendar'
 import { Training } from '@/features/training/get-trainings'
 import { Exercise } from '@prisma/client'
 import { useState } from 'react'
@@ -30,11 +31,17 @@ export default function TrainingComponents({
 
   return (
     <div>
-      <div className="flex flex-row justify-center items-center gap-4">
+      <div className="w-full mb-5 md:my-8 md:flex flex-row justify-center items-center gap-10">
         <Calendar
           selectedDate={selectedDate as Date}
           setSelectedDate={setSelectedDate}
+          className="hidden md:flex justify-center"
         />
+        <WeekCalendar
+          selectedDate={selectedDate as Date}
+          setSelectedDate={setSelectedDate}
+          className="flex md:hidden justify-center"
+        ></WeekCalendar>
         <TrainingReport
           trainingReportProps={trainingReportProps}
         ></TrainingReport>
@@ -44,6 +51,7 @@ export default function TrainingComponents({
           initialExercises={initialExercises}
           shouldRefresh={shouldRefresh}
           setShouldRefresh={setShouldRefresh}
+          className="w-[80svw] md:w-130 h-20 mb-5"
         />
         <TrainingList
           userId={userId as string}

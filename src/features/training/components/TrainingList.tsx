@@ -1,6 +1,7 @@
 'use client'
 
-import { Card, CardContent, CardTitle } from '@/components/ui/card'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { CardContent, CardTitle } from '@/components/ui/card'
 import { TrainingReportProps } from '@/features/training/components/TrainingReport'
 import getTrainings, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
@@ -116,30 +117,44 @@ function TrainingCard({
   sets,
 }: TrainingCardProps) {
   return (
-    <Card className="w-[30svw] h-full">
-      <Link href={`/trainings/${trainingId}`}>
-        <div className="px-[1svw] py-[1svh]">
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-col">
-              <CardTitle className="pr-[3svw]">{trainingName}</CardTitle>
-              <BodyAreaTags bodyAreas={bodyAreas} />
-            </div>
-            <div className="flex flex-col">
-              <CardContent>{volume}kg</CardContent>
-              <span className="text-sm">{sets}セット</span>
-            </div>
+    <Button
+      className={`${buttonVariants({ variant: 'outline' })} text-black w-[95svw] md:w-150 h-full mb-1`}
+    >
+      <Link className="w-full h-full" href={`/trainings/${trainingId}`}>
+        <div className="flex flex-row justify-around px-5 py-2">
+          <div className="w-100 flex flex-col">
+            <CardTitle className="pr-3 mb-1 text-left text-[1.2rem] font-color-main">
+              {trainingName}
+            </CardTitle>
+            <BodyAreaTags bodyAreas={bodyAreas} className="text-left" />
+          </div>
+          <div className="flex flex-col">
+            <CardContent className="mb-1 text-right">
+              <span className="text-[1.2rem]">{volume}</span>
+              <span className="ml-1">kg</span>
+            </CardContent>
+            <span className="text-sm">
+              <span>{sets}</span>
+              <span className="ml-1">セット</span>
+            </span>
           </div>
         </div>
       </Link>
-    </Card>
+    </Button>
   )
 }
 
-function BodyAreaTags({ bodyAreas }: { bodyAreas: string[] }) {
+function BodyAreaTags({
+  bodyAreas,
+  className,
+}: {
+  bodyAreas: string[]
+  className?: string
+}) {
   return (
-    <div>
+    <div className={`${className}`}>
       {bodyAreas.map((bodyArea) => (
-        <span className="text-xs mr-[1svw]" key={bodyArea}>
+        <span className="text-xs mr-4" key={bodyArea}>
           {bodyArea}
         </span>
       ))}

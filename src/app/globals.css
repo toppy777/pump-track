@@ -28,6 +28,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 } */
 
+.font-color-main {
+  color: #292929;
+}
+
 .top-title {
   margin-bottom: 3rem;
 }
