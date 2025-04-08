@@ -12,7 +12,7 @@ import { TrainingReportProps } from '@/features/training/components/TrainingRepo
 import deleteTraining from '@/features/training/delete-training'
 import getTrainings, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
-import { JSX, useEffect, useState } from 'react'
+import { JSX, useCallback, useEffect, useState } from 'react'
 import { GoKebabHorizontal } from 'react-icons/go'
 
 type TrainingListProps = {
@@ -43,24 +43,32 @@ export default function TrainingList({
 }: TrainingListProps) {
   const [isTrainingDeleted, setIsTrainingDeleted] = useState(false)
 
+  const refreshTrainings = useCallback(async () => {
+    try {
+      const fetchedTrainings = await getTrainings({
+        userId,
+        selectedDate,
+      })
+      setTrainings(fetchedTrainings)
+    } catch (error) {
+      console.error('Error fetching trainings:', error)
+    }
+  }, [userId, selectedDate, setTrainings])
+
   // トレーニングデータを取得して更新する
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedTrainings = await getTrainings({
-          userId,
-          selectedDate,
-        })
-        setTrainings(fetchedTrainings)
-      } catch (error) {
-        console.error('Error fetching trainings:', error)
-      }
+    refreshTrainings()
+  }, [userId, selectedDate, shouldRefresh, setTrainings, refreshTrainings])
+
+  // トレーニングが削除されたら更新する
+  // isTrainingDeleted更新でもう一度発火しないように個別に定義
+  useEffect(() => {
+    if (!isTrainingDeleted) {
+      return
     }
-    fetchData()
-    if (isTrainingDeleted) {
-      setIsTrainingDeleted(false)
-    }
-  }, [userId, selectedDate, shouldRefresh, setTrainings, isTrainingDeleted])
+    refreshTrainings()
+    setIsTrainingDeleted(false)
+  }, [isTrainingDeleted])
 
   // トレーニングレポートを更新する
   useEffect(() => {
