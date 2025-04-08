@@ -75,7 +75,9 @@ export default function CreateTraining({
           }
         }}
       >
-        <DrawerTrigger>Open</DrawerTrigger>
+        <DrawerTrigger className="cursor-pointer">
+          トレーニング記録追加
+        </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>トレーニング追加</DrawerTitle>

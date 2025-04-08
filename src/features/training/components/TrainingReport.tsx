@@ -1,18 +1,22 @@
 import { Separator } from '@/components/ui/separator'
 
-export default function TrainingReport({
-  totalVolume,
-  trainingCount,
-  totalSets,
-  totalReps,
-}: {
+export type TrainingReportProps = {
   totalVolume: number
   trainingCount: number
   totalSets: number
   totalReps: number
+}
+
+export default function TrainingReport({
+  trainingReportProps,
+}: {
+  trainingReportProps: TrainingReportProps
 }) {
+  const { totalVolume, trainingCount, totalSets, totalReps } =
+    trainingReportProps
+
   return (
-    <div className="w-full h-[15svh] flex flex-col items-center justify-center space-y-[1svh]">
+    <div className="w-[30%] h-[15svh] flex flex-col items-center justify-center space-y-[1svh]">
       <div className="h-[4svh]">
         <h2>ボリューム</h2>
         <div className="text-center">

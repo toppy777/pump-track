@@ -1,22 +1,37 @@
 'use client'
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
-import TrainingReport from '@/features/training/components/TrainingReport'
+import { TrainingReportProps } from '@/features/training/components/TrainingReport'
 import getTrainings, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
-import { JSX, useEffect, useState } from 'react'
+import { JSX, useEffect } from 'react'
+
+type TrainingListProps = {
+  userId: string
+  selectedDate: Date
+  shouldRefresh: boolean
+  trainings: Training[]
+  setTrainings: (trainings: Training[]) => void
+  setTrainingReportProps: (trainingReport: TrainingReportProps) => void
+}
+
+type TrainingCardProps = {
+  trainingId: number
+  trainingName: string
+  bodyAreas: string[]
+  volume: number
+  sets: number
+}
 
 export default function TrainingList({
   userId,
   selectedDate,
   shouldRefresh,
-}: {
-  userId: string
-  selectedDate: Date
-  shouldRefresh: boolean
-}) {
-  const [trainings, setTrainings] = useState<Training[]>([])
-
+  trainings,
+  setTrainings,
+  setTrainingReportProps,
+}: TrainingListProps) {
+  // トレーニングデータを取得して更新する
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,58 +45,67 @@ export default function TrainingList({
       }
     }
     fetchData()
-  }, [userId, selectedDate, shouldRefresh])
+  }, [userId, selectedDate, shouldRefresh, setTrainings])
 
-  return <TrainingCardsAndReport trainings={trainings}></TrainingCardsAndReport>
+  // トレーニングレポートを更新する
+  useEffect(() => {
+    const { totalVolume, totalSets, totalReps } =
+      calculateTrainingStats(trainings)
+    setTrainingReportProps({
+      totalVolume,
+      trainingCount: trainings.length,
+      totalSets,
+      totalReps,
+    })
+  }, [trainings, setTrainingReportProps])
+
+  // トレーニングカード要素を生成する
+  const trainingElements: JSX.Element[] = generateTrainingElements(trainings)
+
+  return trainingElements
 }
 
-function TrainingCardsAndReport({ trainings }: { trainings: Training[] }) {
-  const trainingElements: JSX.Element[] = []
-  let totalVolume: number = 0
-  let totalSets: number = 0
-  let totalReps: number = 0
-  trainings?.forEach((training) => {
-    const muscleNames: string[] = []
-    let setCount: number = 0
-    let trainingVolume: number = 0
-    training.exercise?.muscles.forEach((muscle) => {
-      muscleNames.push(muscle.name)
-    })
+// 複数のトレーニングのボリューム、セット数、レップ数をそれぞれ合計する
+function calculateTrainingStats(trainings: Training[]) {
+  let totalVolume = 0
+  let totalSets = 0
+  let totalReps = 0
+
+  trainings.forEach((training) => {
     training.sets.forEach((set) => {
-      const weight = set.weight
-      const reps = set.reps
-      if (reps !== null) {
-        totalReps += reps
-      }
-      const volume = weight !== null && reps !== null ? weight * reps : 0
-      trainingVolume += volume
-      setCount += 1
+      const weight = set.weight || 0
+      const reps = set.reps || 0
+      totalReps += reps
+      totalSets += 1
+      totalVolume += weight * reps
     })
-    trainingElements.push(
+  })
+
+  return { totalVolume, totalSets, totalReps }
+}
+
+// トレーニングの情報を元にトレーニングカード要素を生成する
+function generateTrainingElements(trainings: Training[]) {
+  return trainings.map((training) => {
+    const muscleNames =
+      training.exercise?.muscles.map((muscle) => muscle.name) || []
+    const trainingVolume = training.sets.reduce((volume, set) => {
+      const weight = set.weight || 0
+      const reps = set.reps || 0
+      return volume + weight * reps
+    }, 0)
+
+    return (
       <TrainingCard
         key={training.id}
         trainingId={training.id}
         trainingName={training.exercise?.name || ''}
         bodyAreas={muscleNames}
         volume={trainingVolume}
-        sets={setCount}
-      ></TrainingCard>,
+        sets={training.sets.length}
+      />
     )
-    totalVolume += trainingVolume
-    totalSets += setCount
   })
-  return (
-    <div>
-      <TrainingReport
-        totalVolume={totalVolume}
-        trainingCount={trainings?.length || 0}
-        totalSets={totalSets}
-        totalReps={totalReps}
-      ></TrainingReport>
-      <h1>Training List</h1>
-      {trainingElements}
-    </div>
-  )
 }
 
 function TrainingCard({
@@ -90,13 +114,7 @@ function TrainingCard({
   bodyAreas,
   volume,
   sets,
-}: {
-  trainingId: number
-  trainingName: string
-  bodyAreas: string[]
-  volume: number
-  sets: number
-}) {
+}: TrainingCardProps) {
   return (
     <Card className="w-[30svw] h-full">
       <Link href={`/trainings/${trainingId}`}>
@@ -104,13 +122,7 @@ function TrainingCard({
           <div className="flex flex-row justify-between">
             <div className="flex flex-col">
               <CardTitle className="pr-[3svw]">{trainingName}</CardTitle>
-              <div>
-                {bodyAreas?.map((bodyArea) => (
-                  <span className="text-xs mr-[1svw]" key={bodyArea}>
-                    {bodyArea}
-                  </span>
-                ))}
-              </div>
+              <BodyAreaTags bodyAreas={bodyAreas} />
             </div>
             <div className="flex flex-col">
               <CardContent>{volume}kg</CardContent>
@@ -120,5 +132,17 @@ function TrainingCard({
         </div>
       </Link>
     </Card>
+  )
+}
+
+function BodyAreaTags({ bodyAreas }: { bodyAreas: string[] }) {
+  return (
+    <div>
+      {bodyAreas.map((bodyArea) => (
+        <span className="text-xs mr-[1svw]" key={bodyArea}>
+          {bodyArea}
+        </span>
+      ))}
+    </div>
   )
 }
