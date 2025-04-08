@@ -13,12 +13,12 @@ function CustomRow(props: CustomRowProps) {
   else return <></>
 }
 
-type weekButtonProps = {
+type WeekButtonProps = {
   selectedDate: Date | undefined
   setSelectedDate: (date: Date) => void
 }
 
-type controlWeekProps = weekButtonProps & {
+type ControlWeekProps = WeekButtonProps & {
   direction: 'prev' | 'next'
   e: React.MouseEvent
 }
@@ -28,7 +28,7 @@ function controlWeek({
   selectedDate,
   setSelectedDate,
   e,
-}: controlWeekProps) {
+}: ControlWeekProps) {
   e.stopPropagation()
   const nextWeekDate = new Date(selectedDate || new Date())
   if (direction === 'prev') {
@@ -45,7 +45,7 @@ function controlWeek({
 function PreviousWeekButton({
   selectedDate,
   setSelectedDate,
-}: weekButtonProps) {
+}: WeekButtonProps) {
   return (
     <button
       onClick={(e) => {
@@ -63,7 +63,7 @@ function PreviousWeekButton({
   )
 }
 
-function NextWeekButton({ selectedDate, setSelectedDate }: weekButtonProps) {
+function NextWeekButton({ selectedDate, setSelectedDate }: WeekButtonProps) {
   return (
     <button
       onClick={(e) => {
