@@ -119,9 +119,7 @@ export default function WeekCalendar({
         mode="single"
         selected={selectedDate}
         onSelect={(date) => {
-          if (date === undefined) {
-            setSelectedDate(selectedDate)
-          } else {
+          if (date !== undefined) {
             setSelectedDate(date as Date)
           }
         }}
