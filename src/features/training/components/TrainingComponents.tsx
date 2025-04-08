@@ -20,7 +20,7 @@ export default function TrainingComponents({
 }) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
   const [shouldRefresh, setShouldRefresh] = useState(false)
-  const [trainigs, setTrainings] = useState<Training[]>([])
+  const [trainings, setTrainings] = useState<Training[]>([])
   const [trainingReportProps, setTrainingReportProps] =
     useState<TrainingReportProps>({
       totalVolume: 0,
@@ -57,7 +57,7 @@ export default function TrainingComponents({
           userId={userId as string}
           selectedDate={selectedDate as Date}
           shouldRefresh={shouldRefresh}
-          trainings={trainigs}
+          trainings={trainings}
           setTrainings={setTrainings}
           setTrainingReportProps={setTrainingReportProps}
         />
