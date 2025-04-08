@@ -20,7 +20,6 @@ export default async function TrainingEdit({
   return (
     <div>
       <Header session={session as Session} />
-      {id}
       <EditTraining sets={sets} />
     </div>
   )

@@ -13,6 +13,7 @@ import deleteTrainingSet from '@/features/training/delete-training-set'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -110,6 +111,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
 
   return (
     <div>
+      <Link href={`/trainings`}>前へ</Link>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
