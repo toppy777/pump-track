@@ -5,13 +5,16 @@ import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import ExerciseList from '@/features/exercise/components/ExerciseList'
 import { createExercise } from '@/features/exercise/create-exercise-action'
+import getExercises, {
+  ExerciseWithMuscles,
+} from '@/features/exercise/get-exercises'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Muscle } from '@prisma/client'
 import { useEffect, useState } from 'react'
@@ -30,10 +33,23 @@ export default function CreateExercise({
   initialMuscles: Muscle[]
 }) {
   const [muscles, setMuscles] = useState<Muscle[]>([])
+  const [exercises, setExercises] = useState<ExerciseWithMuscles[]>([])
+  const [createdExerciseId, setCreatedExerciseId] = useState<number | null>(
+    null,
+  )
 
   useEffect(() => {
     setMuscles(initialMuscles)
   }, [initialMuscles])
+
+  useEffect(() => {
+    async function fetchExercises() {
+      const data = await getExercises()
+      setExercises(data)
+    }
+
+    fetchExercises()
+  }, [createdExerciseId])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,11 +61,15 @@ export default function CreateExercise({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createExercise(values)
+    const result = await createExercise(values)
+    setCreatedExerciseId(result.data?.id || null)
+    form.reset()
   }
 
   return (
-    <div>
+    <div className="flex ">
+      <ExerciseList exercises={exercises} />
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -61,7 +81,6 @@ export default function CreateExercise({
                 <FormControl>
                   <input type="text" placeholder="ベンチプレス" {...field} />
                 </FormControl>
-                <FormDescription>種目名を入力してください。</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -75,7 +94,6 @@ export default function CreateExercise({
                 <FormControl>
                   <input type="text" placeholder="" {...field} />
                 </FormControl>
-                <FormDescription>種目説明を入力できます。</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
