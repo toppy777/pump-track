@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +18,9 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { CiMenuKebab } from 'react-icons/ci'
+import { GoKebabHorizontal } from 'react-icons/go'
+import { IoIosArrowBack } from 'react-icons/io'
+import { MdOutlineSaveAlt } from 'react-icons/md'
 import { z } from 'zod'
 
 const formSchema = z.object({
@@ -110,36 +113,50 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   }
 
   return (
-    <div>
-      <Link href={`/trainings`}>前へ</Link>
+    <div className="flex flex-col items-center">
+      <div className="w-180 mt-1 flex items-start">
+        <Link href={`/trainings`} className="w-12 h-full">
+          <Button
+            variant="ghost"
+            className="[&_svg]:size-7 w-full h-full cursor-pointer"
+          >
+            <IoIosArrowBack className="size-1 hover: opacity-80" />
+          </Button>
+        </Link>
+      </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col justify-center items-center w-180 leading-15"
+        >
           <div>
             {sets.map((set, index) => (
-              <div key={set.id} className="flex flex-row gap-2 w-[50svw]">
+              <div key={set.id} className="flex flex-row">
                 <Input
                   type="number"
-                  placeholder="weight"
+                  placeholder="重量"
                   value={set?.weight ?? ''}
                   name="weight"
+                  className="w-50 text-center"
                   onChange={(e) =>
                     handleInputChange(index, 'weight', e.target.value)
                   }
                 ></Input>
-                kg
+                <span className="ml-2 mr-8">kg</span>
                 <Input
                   type="number"
-                  placeholder="reps"
+                  placeholder="レップ"
                   value={set?.reps ?? ''}
                   name="reps"
+                  className="w-50 text-center"
                   onChange={(e) =>
                     handleInputChange(index, 'reps', e.target.value)
                   }
                 ></Input>
-                reps
+                <span className="mx-2">reps</span>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <CiMenuKebab />
+                  <DropdownMenuTrigger className="w-8">
+                    <GoKebabHorizontal size="22" className="ml-2" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem onClick={() => handleDeleteSet(index)}>
@@ -149,26 +166,35 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 </DropdownMenu>
               </div>
             ))}
-            <div className="flex flex-row gap-2 w-[50svw]">
+            <div className="flex justify-center">
               <Input
                 type="number"
-                placeholder="weight"
+                placeholder="重量"
                 value={pendingSet.weight ?? ''}
                 name="weight"
+                className="w-50 text-center"
                 onChange={(e) => handleNewSetChange('weight', e.target.value)}
               ></Input>
-              kg
+              <span className="ml-2 mr-8">kg</span>
               <Input
                 type="number"
-                placeholder="reps"
+                placeholder="レップ"
                 value={pendingSet.reps ?? ''}
                 name="reps"
+                className="w-50 text-center"
                 onChange={(e) => handleNewSetChange('reps', e.target.value)}
               ></Input>
-              reps
+              <span className="mx-2">reps</span>
+              <div className="w-8"></div>
             </div>
           </div>
-          <button type="submit">保存</button>
+          <Button
+            type="submit"
+            className="w-150 h-15 my-3 [&_svg]:size-5 cursor-pointer text-[1.1rem]"
+          >
+            <MdOutlineSaveAlt color="white" className="size-1" />
+            保存
+          </Button>
         </form>
       </Form>
     </div>

@@ -79,7 +79,7 @@ export default function CreateTraining({
         }}
       >
         <DrawerTrigger asChild>
-          <Button className="[&_svg]:size-7 w-full h-full text-[1.2rem] cursor-pointer">
+          <Button className="[&_svg]:size-5 w-full h-full text-[1.1rem] cursor-pointer">
             <IoAddCircleOutline className="size-1" />
             <span>追加</span>
           </Button>
