@@ -1,13 +1,20 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { Exercise } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
-export default async function getExercises(): Promise<Exercise[]> {
+export type ExerciseWithMuscles = Prisma.ExerciseGetPayload<{
+  include: {
+    muscles: true
+  }
+}>
+
+export default async function getExercises(): Promise<ExerciseWithMuscles[]> {
   const exercises = await prisma.exercise.findMany({
     orderBy: {
       name: 'asc',
     },
+    include: { muscles: true },
   })
 
   return exercises
