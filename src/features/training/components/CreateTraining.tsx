@@ -7,7 +7,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -68,6 +67,7 @@ export default function CreateTraining({
       console.error('Failed to create trainings:', error)
     }
     setShouldRefresh(!shouldRefresh)
+    form.reset()
   }
 
   return (
@@ -85,16 +85,16 @@ export default function CreateTraining({
             <span>追加</span>
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
+        <DrawerContent className="h-auto px-2 md:px-20">
           <DrawerHeader>
             <DrawerTitle>トレーニング追加</DrawerTitle>
-            <DrawerDescription>
-              新たなトレーニング記録を追加します
-            </DrawerDescription>
           </DrawerHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-row gap-4">
+            <form
+              id="createTrainingForm"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <div className="flex flex-row gap-4 flex-wrap">
                 {exercises?.map((exercise) => (
                   <FormField
                     key={exercise.id}
@@ -105,6 +105,7 @@ export default function CreateTraining({
                         <FormItem className="flex flex-row gap-2">
                           <FormControl>
                             <Checkbox
+                              className="cursor-pointer"
                               checked={field.value?.includes(exercise.id)}
                               onCheckedChange={(checked) => {
                                 return checked
@@ -120,7 +121,9 @@ export default function CreateTraining({
                               }}
                             />
                           </FormControl>
-                          <FormLabel>{exercise.name}</FormLabel>
+                          <FormLabel className="cursor-pointer text-[1.1rem]">
+                            {exercise.name}
+                          </FormLabel>
                           <FormMessage />
                         </FormItem>
                       )
@@ -128,14 +131,23 @@ export default function CreateTraining({
                   ></FormField>
                 ))}
               </div>
-              <DrawerClose asChild>
-                <Button type="submit">追加</Button>
-              </DrawerClose>
             </form>
           </Form>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button
+                form="createTrainingForm"
+                type="submit"
+                className={`${buttonStyles}`}
+              >
+                <IoAddCircleOutline className="size-1" />
+                <span>追加</span>
+              </Button>
+            </DrawerClose>
+            <DrawerClose asChild>
+              <Button variant="outline" className={`${buttonStyles}`}>
+                キャンセル
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
