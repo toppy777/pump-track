@@ -1,5 +1,6 @@
 'use client'
 
+import { buttonStyles } from '@/components/styles'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -79,7 +80,7 @@ export default function CreateTraining({
         }}
       >
         <DrawerTrigger asChild>
-          <Button className="[&_svg]:size-5 w-full h-full text-[1.1rem] cursor-pointer">
+          <Button className={`${buttonStyles}`}>
             <IoAddCircleOutline className="size-1" />
             <span>追加</span>
           </Button>

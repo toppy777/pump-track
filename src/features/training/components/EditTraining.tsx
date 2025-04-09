@@ -1,5 +1,6 @@
 'use client'
 
+import { buttonStyles } from '@/components/styles'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -190,10 +191,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
               <div className="w-8"></div>
             </div>
           </div>
-          <Button
-            type="submit"
-            className="w-[85svw] md:w-150 h-15 my-3 [&_svg]:size-5 cursor-pointer text-[1.1rem]"
-          >
+          <Button type="submit" className={`my-3 ${buttonStyles}`}>
             <MdOutlineSaveAlt color="white" className="size-1" />
             保存
           </Button>
