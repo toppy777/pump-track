@@ -23,10 +23,7 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
             <CardDescription className="mb-2">
               <p>{exercise.description}</p>
             </CardDescription>
-            <div
-              key={exercise.id}
-              className="flex flex-row justify-start items-start gap-4"
-            >
+            <div className="flex flex-row justify-start items-start gap-4">
               {exercise.muscles.map((muscle) => (
                 <CardFooter key={muscle.id}>
                   <p className="text-sm">{muscle.name}</p>
