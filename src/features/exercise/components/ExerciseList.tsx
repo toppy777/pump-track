@@ -29,9 +29,7 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
             >
               {exercise.muscles.map((muscle) => (
                 <CardFooter key={muscle.id}>
-                  <p key={muscle.id} className="text-sm">
-                    {muscle.name}
-                  </p>
+                  <p className="text-sm">{muscle.name}</p>
                 </CardFooter>
               ))}
             </div>
