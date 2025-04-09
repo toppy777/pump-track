@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TrainingReportProps } from '@/features/training/components/TrainingReport'
 import deleteTraining from '@/features/training/delete-training'
-import getTrainings, { Training } from '@/features/training/get-trainings'
+import getTrainingsByDate, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
 import { JSX, useCallback, useEffect, useState } from 'react'
 import { GoKebabHorizontal } from 'react-icons/go'
@@ -45,7 +45,7 @@ export default function TrainingList({
 
   const refreshTrainings = useCallback(async () => {
     try {
-      const fetchedTrainings = await getTrainings({
+      const fetchedTrainings = await getTrainingsByDate({
         userId,
         selectedDate,
       })
