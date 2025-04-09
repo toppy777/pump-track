@@ -123,7 +123,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
             variant="ghost"
             className="[&_svg]:size-7 w-full h-full cursor-pointer"
           >
-            <IoIosArrowBack className="size-1 hover: opacity-80" />
+            <IoIosArrowBack className="size-1 hover:opacity-80" />
           </Button>
         </Link>
       </div>
