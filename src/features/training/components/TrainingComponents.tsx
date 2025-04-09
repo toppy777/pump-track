@@ -51,7 +51,7 @@ export default function TrainingComponents({
           initialExercises={initialExercises}
           shouldRefresh={shouldRefresh}
           setShouldRefresh={setShouldRefresh}
-          className="w-[80svw] md:w-130 h-20 mb-5"
+          className="mb-5"
         />
         <TrainingList
           userId={userId as string}
