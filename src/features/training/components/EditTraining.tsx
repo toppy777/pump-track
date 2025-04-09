@@ -112,9 +112,11 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
     }
   }
 
+  const inputStyle = 'w-[30svw] md:w-50 text-center'
+
   return (
     <div className="flex flex-col items-center">
-      <div className="w-180 mt-1 flex items-start">
+      <div className="w-[95svw] md:w-180 mt-1 flex items-start">
         <Link href={`/trainings`} className="w-12 h-full">
           <Button
             variant="ghost"
@@ -127,7 +129,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col justify-center items-center w-180 leading-15"
+          className="flex flex-col justify-center items-center w-[95svw] md:w-180 leading-15"
         >
           <div>
             {sets.map((set, index) => (
@@ -137,18 +139,18 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                   placeholder="重量"
                   value={set?.weight ?? ''}
                   name="weight"
-                  className="w-50 text-center"
+                  className={inputStyle}
                   onChange={(e) =>
                     handleInputChange(index, 'weight', e.target.value)
                   }
                 ></Input>
-                <span className="ml-2 mr-8">kg</span>
+                <span className="ml-2 mr-2 md:mr-8">kg</span>
                 <Input
                   type="number"
                   placeholder="レップ"
                   value={set?.reps ?? ''}
                   name="reps"
-                  className="w-50 text-center"
+                  className={inputStyle}
                   onChange={(e) =>
                     handleInputChange(index, 'reps', e.target.value)
                   }
@@ -172,16 +174,16 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 placeholder="重量"
                 value={pendingSet.weight ?? ''}
                 name="weight"
-                className="w-50 text-center"
+                className={inputStyle}
                 onChange={(e) => handleNewSetChange('weight', e.target.value)}
               ></Input>
-              <span className="ml-2 mr-8">kg</span>
+              <span className="ml-2 mr-2 md:mr-8">kg</span>
               <Input
                 type="number"
                 placeholder="レップ"
                 value={pendingSet.reps ?? ''}
                 name="reps"
-                className="w-50 text-center"
+                className={inputStyle}
                 onChange={(e) => handleNewSetChange('reps', e.target.value)}
               ></Input>
               <span className="mx-2">reps</span>
@@ -190,7 +192,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
           </div>
           <Button
             type="submit"
-            className="w-150 h-15 my-3 [&_svg]:size-5 cursor-pointer text-[1.1rem]"
+            className="w-[85svw] md:w-150 h-15 my-3 [&_svg]:size-5 cursor-pointer text-[1.1rem]"
           >
             <MdOutlineSaveAlt color="white" className="size-1" />
             保存
