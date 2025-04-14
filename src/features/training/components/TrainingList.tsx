@@ -185,11 +185,14 @@ function TrainingCard({
         </Link>
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger className="cursor-pointer">
           <GoKebabHorizontal size="22" className="ml-2" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => handleDeleteTraining(trainingId)}>
+          <DropdownMenuItem
+            onClick={() => handleDeleteTraining(trainingId)}
+            className="cursor-pointer"
+          >
             削除
           </DropdownMenuItem>
         </DropdownMenuContent>

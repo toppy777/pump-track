@@ -165,11 +165,14 @@ export default function EditTraining({
                 ></Input>
                 <span className="mx-2">reps</span>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="w-8">
+                  <DropdownMenuTrigger className="w-8 cursor-pointer">
                     <GoKebabHorizontal size="22" className="ml-2" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handleDeleteSet(index)}>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteSet(index)}
+                      className="cursor-pointer"
+                    >
                       削除
                     </DropdownMenuItem>
                   </DropdownMenuContent>
