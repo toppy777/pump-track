@@ -12,9 +12,9 @@ import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import createTrainingSet from '@/features/training/create-training-set'
 import deleteTrainingSet from '@/features/training/delete-training-set'
+import { TrainingWithExerciseWithSet } from '@/features/training/get-trainings'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Set } from '@prisma/client'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
@@ -29,9 +29,13 @@ const formSchema = z.object({
   reps: z.number().min(0).max(1000),
 })
 
-export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
+export default function EditTraining({
+  training,
+}: {
+  training: TrainingWithExerciseWithSet
+}) {
   const params = useParams()
-  const [sets, setSets] = useState(initialSets)
+  const [sets, setSets] = useState(training.sets)
   const [pendingSet, setPendingSet] = useState<{
     weight?: number
     reps?: number
@@ -63,8 +67,8 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
   function getUpdatedSets() {
     return sets.filter(
       (set, index) =>
-        (set.weight ?? null) !== (initialSets[index].weight ?? null) ||
-        (set.reps ?? null) !== (initialSets[index].reps ?? null),
+        (set.weight ?? null) !== (training.sets[index].weight ?? null) ||
+        (set.reps ?? null) !== (training.sets[index].reps ?? null),
     )
   }
 
@@ -117,7 +121,7 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[95svw] md:w-180 mt-1 flex items-start">
+      <div className="w-[95svw] md:w-180 mb-4 flex items-start">
         <Link href={`/trainings`} className="w-12 h-full">
           <Button
             variant="ghost"
@@ -126,6 +130,9 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
             <IoIosArrowBack className="size-1 hover:opacity-80" />
           </Button>
         </Link>
+        <h1 className="font-bold w-full h-full md:ml-6 leading-12 text-[1.2rem] md:text-[1.4rem]">
+          {training?.exercise?.name ?? '種目名取得できず'}
+        </h1>
       </div>
       <Form {...form}>
         <form
@@ -158,11 +165,14 @@ export default function EditTraining({ sets: initialSets }: { sets: Set[] }) {
                 ></Input>
                 <span className="mx-2">reps</span>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="w-8">
+                  <DropdownMenuTrigger className="w-8 cursor-pointer">
                     <GoKebabHorizontal size="22" className="ml-2" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handleDeleteSet(index)}>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteSet(index)}
+                      className="cursor-pointer"
+                    >
                       削除
                     </DropdownMenuItem>
                   </DropdownMenuContent>

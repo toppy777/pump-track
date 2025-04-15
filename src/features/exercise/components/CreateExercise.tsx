@@ -72,8 +72,8 @@ export default function CreateExercise({
 
   return (
     <div className="flex justify-center">
-      <div className="md:flex flex-row w-[90svw] md:w-200 justify-around md:mt-4">
-        <div className="flex flex-col mt-3 ml-4">
+      <div className="md:flex flex-row w-[90svw] md:w-200 justify-around">
+        <div className="flex flex-col">
           <div className="border-1 rounded-lg px-6 py-5">
             <h2 className="font-bold text-[1.2rem] text-center mb-3">
               種目追加

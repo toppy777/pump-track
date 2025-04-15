@@ -1,18 +1,16 @@
+import { Button } from '@/components/ui/button'
 import signOut from '@/features/auth/signOut'
 
-export default function SignOut() {
+export default function SignOut({ className }: { className?: string }) {
   return (
     <form
       action={async () => {
         await signOut()
       }}
     >
-      <button
-        type="submit"
-        className="w-full bg-stone-500 text-white hover:bg-stone-400 transition duration-150 ease-out px-10 mt-2 mb-1 rounded-md cursor-pointer"
-      >
+      <Button type="submit" className={`cursor-pointer ${className}`}>
         Sign out
-      </button>
+      </Button>
     </form>
   )
 }

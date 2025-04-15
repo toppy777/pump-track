@@ -9,7 +9,14 @@ export type Training = Prisma.TrainingGetPayload<{
   }
 }>
 
-export default async function getTrainings({
+export type TrainingWithExerciseWithSet = Prisma.TrainingGetPayload<{
+  include: {
+    exercise: { include: { muscles: { include: { bodyArea: true } } } }
+    sets: true
+  }
+}>
+
+export default async function getTrainingsByDate({
   userId,
   selectedDate,
 }: {
@@ -39,4 +46,28 @@ export default async function getTrainings({
   })
 
   return trainings
+}
+
+export async function getTraining({
+  userId,
+  trainingId,
+}: {
+  userId: string
+  trainingId: number
+}): Promise<TrainingWithExerciseWithSet> {
+  const training = await prisma.training.findUnique({
+    where: { user: { id: userId }, id: trainingId },
+    include: {
+      exercise: {
+        include: { muscles: { include: { bodyArea: true } } },
+      },
+      sets: true,
+    },
+  })
+
+  if (!training) {
+    throw new Error('Training not found')
+  }
+
+  return training
 }

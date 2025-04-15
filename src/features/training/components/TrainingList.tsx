@@ -1,7 +1,6 @@
 'use client'
 
 import { Button, buttonVariants } from '@/components/ui/button'
-import { CardContent, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { TrainingReportProps } from '@/features/training/components/TrainingReport'
 import deleteTraining from '@/features/training/delete-training'
-import getTrainings, { Training } from '@/features/training/get-trainings'
+import getTrainingsByDate, { Training } from '@/features/training/get-trainings'
 import Link from 'next/link'
 import { JSX, useCallback, useEffect, useState } from 'react'
 import { GoKebabHorizontal } from 'react-icons/go'
@@ -45,7 +44,7 @@ export default function TrainingList({
 
   const refreshTrainings = useCallback(async () => {
     try {
-      const fetchedTrainings = await getTrainings({
+      const fetchedTrainings = await getTrainingsByDate({
         userId,
         selectedDate,
       })
@@ -165,31 +164,36 @@ function TrainingCard({
       >
         <Link className="w-full h-full" href={`/trainings/${trainingId}`}>
           <div className="flex flex-row justify-around px-5 py-2">
-            <div className="w-100 flex flex-col">
-              <CardTitle className="pr-3 mb-1 text-left text-[1.2rem] font-color-main">
+            <div className="w-[50svw] md:w-100 flex flex-col">
+              <h2 className="w-full pr-3 mb-1 text-left text-[1.2rem] font-bold font-color-main break-all overflow-hidden text-ellipsis">
                 {trainingName}
-              </CardTitle>
+              </h2>
               <BodyAreaTags bodyAreas={bodyAreas} className="text-left" />
             </div>
             <div className="flex flex-col">
-              <CardContent className="mb-1 text-right">
+              <div className="mb-1 text-right">
                 <span className="text-[1.2rem]">{volume}</span>
                 <span className="ml-1">kg</span>
-              </CardContent>
-              <span className="text-sm">
-                <span>{sets}</span>
-                <span className="ml-1">セット</span>
-              </span>
+              </div>
+              <div>
+                <span className="text-sm">
+                  <span>{sets}</span>
+                  <span className="ml-1">セット</span>
+                </span>
+              </div>
             </div>
           </div>
         </Link>
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger className="cursor-pointer">
           <GoKebabHorizontal size="22" className="ml-2" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => handleDeleteTraining(trainingId)}>
+          <DropdownMenuItem
+            onClick={() => handleDeleteTraining(trainingId)}
+            className="cursor-pointer"
+          >
             削除
           </DropdownMenuItem>
         </DropdownMenuContent>

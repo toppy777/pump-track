@@ -13,7 +13,7 @@ type ExerciseListProps = {
 
 export default function ExerciseList({ exercises }: ExerciseListProps) {
   return (
-    <div className="mt-3 w-[90svw] md:w-100">
+    <div className="w-[90svw] md:w-100">
       {exercises.map((exercise) => (
         <Card key={exercise.id} className="mb-2 w-full">
           <CardContent className="mx-4 my-3">
@@ -24,11 +24,13 @@ export default function ExerciseList({ exercises }: ExerciseListProps) {
               <p>{exercise.description}</p>
             </CardDescription>
             <div className="flex flex-row justify-start items-start gap-4">
-              {exercise.muscles.map((muscle) => (
-                <CardFooter key={muscle.id}>
-                  <p className="text-sm">{muscle.name}</p>
-                </CardFooter>
-              ))}
+              <CardFooter>
+                {exercise.muscles.map((muscle) => (
+                  <p key={muscle.id} className="text-sm mr-3">
+                    {muscle.name}
+                  </p>
+                ))}
+              </CardFooter>
             </div>
           </CardContent>
         </Card>
