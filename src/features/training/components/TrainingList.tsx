@@ -1,7 +1,6 @@
 'use client'
 
 import { Button, buttonVariants } from '@/components/ui/button'
-import { CardContent, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -165,21 +164,23 @@ function TrainingCard({
       >
         <Link className="w-full h-full" href={`/trainings/${trainingId}`}>
           <div className="flex flex-row justify-around px-5 py-2">
-            <div className="w-100 flex flex-col">
-              <CardTitle className="pr-3 mb-1 text-left text-[1.2rem] font-color-main">
+            <div className="w-[50svw] md:w-100 flex flex-col">
+              <h2 className="w-full pr-3 mb-1 text-left text-[1.2rem] font-bold font-color-main break-all overflow-hidden text-ellipsis">
                 {trainingName}
-              </CardTitle>
+              </h2>
               <BodyAreaTags bodyAreas={bodyAreas} className="text-left" />
             </div>
             <div className="flex flex-col">
-              <CardContent className="mb-1 text-right">
+              <div className="mb-1 text-right">
                 <span className="text-[1.2rem]">{volume}</span>
                 <span className="ml-1">kg</span>
-              </CardContent>
-              <span className="text-sm">
-                <span>{sets}</span>
-                <span className="ml-1">セット</span>
-              </span>
+              </div>
+              <div>
+                <span className="text-sm">
+                  <span>{sets}</span>
+                  <span className="ml-1">セット</span>
+                </span>
+              </div>
             </div>
           </div>
         </Link>
