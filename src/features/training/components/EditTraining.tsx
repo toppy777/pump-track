@@ -121,7 +121,7 @@ export default function EditTraining({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[95svw] md:w-180 mt-2 mb-4 flex items-start">
+      <div className="w-[95svw] md:w-180 mb-4 flex items-start">
         <Link href={`/trainings`} className="w-12 h-full">
           <Button
             variant="ghost"

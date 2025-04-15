@@ -1,3 +1,4 @@
+import Content from '@/components/content'
 import Header from '@/components/header'
 import { auth } from '@/features/auth/config'
 import EditTraining from '@/features/training/components/EditTraining'
@@ -23,7 +24,9 @@ export default async function TrainingEdit({
   return (
     <div>
       <Header session={session as Session} />
-      <EditTraining training={training} />
+      <Content>
+        <EditTraining training={training} />
+      </Content>
     </div>
   )
 }

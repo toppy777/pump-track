@@ -1,3 +1,4 @@
+import Content from '@/components/content'
 import Header from '@/components/header'
 import { auth } from '@/features/auth/config'
 import getExercises from '@/features/exercise/get-exercises'
@@ -12,10 +13,12 @@ export default async function Trainings() {
   return (
     <div>
       <Header session={session as Session} />
-      <TrainingComponents
-        userId={userId as string}
-        initialExercises={exercises}
-      />
+      <Content>
+        <TrainingComponents
+          userId={userId as string}
+          initialExercises={exercises}
+        />
+      </Content>
     </div>
   )
 }

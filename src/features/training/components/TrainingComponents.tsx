@@ -31,7 +31,7 @@ export default function TrainingComponents({
 
   return (
     <div>
-      <div className="w-full mb-5 md:my-8 md:flex flex-row justify-center items-center gap-10">
+      <div className="w-full mb-5 md:flex flex-row justify-center items-center gap-10">
         <Calendar
           selectedDate={selectedDate as Date}
           setSelectedDate={setSelectedDate}

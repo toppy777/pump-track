@@ -13,7 +13,7 @@ type ExerciseListProps = {
 
 export default function ExerciseList({ exercises }: ExerciseListProps) {
   return (
-    <div className="mt-3 w-[90svw] md:w-100">
+    <div className="w-[90svw] md:w-100">
       {exercises.map((exercise) => (
         <Card key={exercise.id} className="mb-2 w-full">
           <CardContent className="mx-4 my-3">
