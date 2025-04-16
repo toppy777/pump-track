@@ -34,7 +34,11 @@ export default function Header({ session }: { session: Session }) {
         <div className="pl-[3svw] flex items-cneter h-10">
           {/* TODO: ロゴの文字が少し低い */}
           <Link
-            href="/"
+            href={
+              session !== null && session.user !== undefined
+                ? '/trainings'
+                : '/'
+            }
             className="header-top-link block px-[2svw] py-[0.5svh]"
           >
             pump track
@@ -42,24 +46,32 @@ export default function Header({ session }: { session: Session }) {
         </div>
         <div className="flex flex-row">
           <div className="pr-[5svw] flex items-center h-10">
-            <Link
-              href="/trainings"
-              className={
-                navLinkStyle + (pathname === '/trainings' ? navCurrent : '')
-              }
-            >
-              トレーニング
-            </Link>
+            {session !== null && session.user !== undefined ? (
+              <Link
+                href="/trainings"
+                className={
+                  navLinkStyle + (pathname === '/trainings' ? navCurrent : '')
+                }
+              >
+                トレーニング
+              </Link>
+            ) : (
+              ''
+            )}
           </div>
           <div className="pr-[5svw] flex items-center h-10">
-            <Link
-              href="/exercises"
-              className={
-                navLinkStyle + (pathname === '/exercises' ? navCurrent : '')
-              }
-            >
-              種目
-            </Link>
+            {session !== null && session.user !== undefined ? (
+              <Link
+                href="/exercises"
+                className={
+                  navLinkStyle + (pathname === '/exercises' ? navCurrent : '')
+                }
+              >
+                種目
+              </Link>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         <div className="pr-[5svw] flex items-center h-10">
