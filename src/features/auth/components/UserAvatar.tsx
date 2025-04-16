@@ -46,3 +46,40 @@ export default function UserAvatar({ session }: { session: Session }) {
     </DropdownMenu>
   )
 }
+
+export function UserAvatarInDrawer({
+  session,
+  className,
+}: {
+  session: Session
+  className?: string
+}) {
+  if (!session?.user) return null
+
+  return (
+    <div className={`${className} flex flex-col gap-5`}>
+      <div className="w-full h-full flex items-center gap-3">
+        <div className="w-20 h-full flex flex-col justify-center items-center">
+          {session.user.image && (
+            <Image
+              src={session.user.image}
+              alt="User Avatar"
+              width="60"
+              height="60"
+              className="rounded-full block"
+            />
+          )}
+        </div>
+        <div className="h-full flex flex-col justify-center">
+          <p className="break-all font-bold text-[1.2rem]">
+            {session && session.user ? session.user.name : ''}
+          </p>
+          <p className="break-all text-gray-500 text-[1.2rem]">
+            {session && session.user ? session.user.email : ''}
+          </p>
+        </div>
+      </div>
+      <SignOut className="w-full text-[1.1rem] h-10" />
+    </div>
+  )
+}
