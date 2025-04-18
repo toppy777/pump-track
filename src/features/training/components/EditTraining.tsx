@@ -10,11 +10,18 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  TrainingRep,
+  TrainingSet,
+  TrainingStats,
+  TrainingVolume,
+} from '@/features/training/components/TrainingStats'
 import createTrainingSet from '@/features/training/create-training-set'
 import deleteTrainingSet from '@/features/training/delete-training-set'
 import { TrainingWithExerciseWithSet } from '@/features/training/get-trainings'
 import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Set } from '@prisma/client'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
@@ -28,6 +35,32 @@ const formSchema = z.object({
   weight: z.number().min(0).max(1000),
   reps: z.number().min(0).max(1000),
 })
+
+type TrainingStats = {
+  volume: number
+  sets: number
+  reps: number
+}
+
+function getTrainingVolume({ sets }: { sets: Set[] }): number {
+  return sets.reduce((acc, set) => acc + (set.weight ?? 0) * (set.reps ?? 0), 0)
+}
+
+function getTrainingSets({ sets }: { sets: Set[] }): number {
+  return sets.length
+}
+
+function getTrainingReps({ sets }: { sets: Set[] }): number {
+  return sets.reduce((acc, set) => acc + (set.reps ?? 0), 0)
+}
+
+function getTrainingStats({ sets }: { sets: Set[] }): TrainingStats {
+  return {
+    volume: getTrainingVolume({ sets }),
+    sets: getTrainingSets({ sets }),
+    reps: getTrainingReps({ sets }),
+  }
+}
 
 export default function EditTraining({
   training,
@@ -43,6 +76,9 @@ export default function EditTraining({
     weight: undefined,
     reps: undefined,
   })
+  const [trainingStats, setTrainingStats] = useState<TrainingStats>(
+    getTrainingStats({ sets }),
+  )
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -115,6 +151,8 @@ export default function EditTraining({
         ),
       )
     }
+
+    setTrainingStats(getTrainingStats({ sets }))
   }
 
   const inputStyle = 'w-[30svw] md:w-50 text-center'
@@ -134,6 +172,13 @@ export default function EditTraining({
           {training?.exercise?.name ?? '種目名取得できず'}
         </h1>
       </div>
+
+      <TrainingStats className="mt-5 mb-7">
+        <TrainingVolume value={trainingStats.volume} />
+        <TrainingSet value={trainingStats.sets} />
+        <TrainingRep value={trainingStats.reps} />
+      </TrainingStats>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
