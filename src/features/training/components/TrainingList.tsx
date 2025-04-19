@@ -118,8 +118,11 @@ function generateTrainingElements({
   setIsTrainingDeleted: (isDeleted: boolean) => void
 }) {
   return trainings.map((training) => {
-    const muscleNames =
-      training.exercise?.muscles.map((muscle) => muscle.name) || []
+    const bodyAreaList =
+      training.exercise?.muscles
+        .filter((muscle) => muscle.bodyArea?.name != null)
+        .map(({ bodyArea }) => bodyArea?.name || '') || []
+    const bodyAreaSet = new Set(bodyAreaList)
     const trainingVolume = training.sets.reduce((volume, set) => {
       const weight = set.weight || 0
       const reps = set.reps || 0
@@ -131,7 +134,7 @@ function generateTrainingElements({
         key={training.id}
         trainingId={training.id}
         trainingName={training.exercise?.name || ''}
-        bodyAreas={muscleNames}
+        bodyAreas={[...bodyAreaSet]}
         volume={trainingVolume}
         sets={training.sets.length}
         setIsTrainingDeleted={setIsTrainingDeleted}
