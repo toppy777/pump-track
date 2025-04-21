@@ -162,24 +162,16 @@ export default function EditTraining({
     }
   }
 
-  const bodyAreaDict: { [key: string]: string[] } = {}
-  training.exercise?.muscles?.forEach((muscle) => {
-    const key: string = muscle.bodyArea?.name || 'others'
-    if (!bodyAreaDict[key]) {
-      bodyAreaDict[key] = []
-    }
-    bodyAreaDict[key].push(muscle.name)
-  })
-
   const muscleGroups: MuscleGroup[] = []
-  for (const key in bodyAreaDict) {
-    const bodyArea: string = key
-    const muscles: string[] = []
-    for (const muscle of bodyAreaDict[key]) {
-      muscles.push(muscle)
+  training.exercise?.muscles?.forEach((muscle) => {
+    const bodyArea: string = muscle.bodyArea?.name || 'others'
+    if (!muscleGroups.some((group) => group.bodyArea === bodyArea)) {
+      muscleGroups.push({ bodyArea, muscles: [] })
     }
-    muscleGroups.push({ bodyArea, muscles })
-  }
+    muscleGroups
+      .find((group) => group.bodyArea === bodyArea)
+      ?.muscles.push(muscle.name)
+  })
 
   const inputStyle = 'w-[30svw] md:w-50 text-center'
 
