@@ -36,11 +36,13 @@ export default function CreateTraining({
   initialExercises,
   shouldRefresh,
   setShouldRefresh,
+  selectedDate,
   className,
 }: {
   initialExercises: Exercise[]
   shouldRefresh: boolean
   setShouldRefresh: (isOpen: boolean) => void
+  selectedDate: Date
   className?: string
 }) {
   const [exercises, setExercises] = useState<Exercise[]>([])
@@ -60,7 +62,7 @@ export default function CreateTraining({
     try {
       await Promise.all(
         values.exercises.map((exercise) =>
-          createTraining({ exerciseId: exercise }),
+          createTraining({ exerciseId: exercise, date: selectedDate }),
         ),
       )
     } catch (error) {
