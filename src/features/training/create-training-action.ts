@@ -7,8 +7,10 @@ import { Training } from '@prisma/client'
 
 export async function createTraining({
   exerciseId,
+  date,
 }: {
   exerciseId: number
+  date: Date
 }): Promise<ActionResponse<Training>> {
   const userId = await getUserId()
 
@@ -33,6 +35,7 @@ export async function createTraining({
             id: userId,
           },
         },
+        createdAt: date,
       },
     })
     return { success: true, data: newTraining }

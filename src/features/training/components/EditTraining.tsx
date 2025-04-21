@@ -24,7 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { IoIosArrowBack } from 'react-icons/io'
@@ -40,6 +40,11 @@ type TrainingStats = {
   volume: number
   sets: number
   reps: number
+}
+
+type MuscleGroup = {
+  bodyArea: string
+  muscles: string[]
 }
 
 function getTrainingVolume({ sets }: { sets: Set[] }): number {
@@ -79,6 +84,10 @@ export default function EditTraining({
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(
     getTrainingStats({ sets }),
   )
+
+  useEffect(() => {
+    setTrainingStats(getTrainingStats({ sets }))
+  }, [sets])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -151,26 +160,51 @@ export default function EditTraining({
         ),
       )
     }
-
-    setTrainingStats(getTrainingStats({ sets }))
   }
+
+  const muscleGroups: MuscleGroup[] = []
+  training.exercise?.muscles?.forEach((muscle) => {
+    const bodyArea: string = muscle.bodyArea?.name || 'others'
+    if (!muscleGroups.some((group) => group.bodyArea === bodyArea)) {
+      muscleGroups.push({ bodyArea, muscles: [] })
+    }
+    muscleGroups
+      .find((group) => group.bodyArea === bodyArea)
+      ?.muscles.push(muscle.name)
+  })
 
   const inputStyle = 'w-[30svw] md:w-50 text-center'
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[95svw] md:w-180 mb-4 flex items-start">
-        <Link href={`/trainings`} className="w-12 h-full">
-          <Button
-            variant="ghost"
-            className="[&_svg]:size-7 w-full h-full cursor-pointer"
-          >
-            <IoIosArrowBack className="size-1 hover:opacity-80" />
-          </Button>
-        </Link>
-        <h1 className="font-bold w-full h-full md:ml-6 leading-12 text-[1.2rem] md:text-[1.4rem]">
-          {training?.exercise?.name ?? '種目名取得できず'}
-        </h1>
+      <div className="w-[95svw] md:w-180 mb-4">
+        <div className=" flex items-start">
+          <Link href={`/trainings`} className="w-12 h-full">
+            <Button
+              variant="ghost"
+              className="[&_svg]:size-7 w-full h-full cursor-pointer"
+            >
+              <IoIosArrowBack className="size-1 hover:opacity-80" />
+            </Button>
+          </Link>
+          <h1 className="font-bold w-full h-full md:ml-6 leading-12 text-[1.2rem] md:text-[1.4rem]">
+            {training?.exercise?.name ?? '種目名取得できず'}
+          </h1>
+        </div>
+        <div className="w-full flex flex-col ml-17">
+          {muscleGroups.map((muscleGroup) => (
+            <div key={muscleGroup.bodyArea} className="">
+              <span className="text-sm text-gray-700 mr-2">
+                {muscleGroup.bodyArea}
+              </span>
+              {muscleGroup.muscles.map((muscle) => (
+                <span key={muscle} className="text-xs text-gray-500 ml-2">
+                  {muscle}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <TrainingStats className="mt-5 mb-7">

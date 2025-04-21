@@ -51,6 +51,7 @@ export default function TrainingComponents({
           initialExercises={initialExercises}
           shouldRefresh={shouldRefresh}
           setShouldRefresh={setShouldRefresh}
+          selectedDate={selectedDate as Date}
           className="mb-5"
         />
         <TrainingList
