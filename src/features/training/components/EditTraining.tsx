@@ -42,6 +42,11 @@ type TrainingStats = {
   reps: number
 }
 
+type MuscleGroup = {
+  bodyArea: string
+  muscles: string[]
+}
+
 function getTrainingVolume({ sets }: { sets: Set[] }): number {
   return sets.reduce((acc, set) => acc + (set.weight ?? 0) * (set.reps ?? 0), 0)
 }
@@ -155,22 +160,57 @@ export default function EditTraining({
     setTrainingStats(getTrainingStats({ sets }))
   }
 
+  const bodyAreaDict: { [key: string]: string[] } = {}
+  training.exercise?.muscles?.forEach((muscle) => {
+    const key: string = muscle.bodyArea?.name || 'others'
+    if (!bodyAreaDict[key]) {
+      bodyAreaDict[key] = []
+    }
+    bodyAreaDict[key].push(muscle.name)
+  })
+
+  const muscleGroups: MuscleGroup[] = []
+  for (const key in bodyAreaDict) {
+    const bodyArea: string = key
+    const muscles: string[] = []
+    for (const muscle of bodyAreaDict[key]) {
+      muscles.push(muscle)
+    }
+    muscleGroups.push({ bodyArea, muscles })
+  }
+
   const inputStyle = 'w-[30svw] md:w-50 text-center'
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[95svw] md:w-180 mb-4 flex items-start">
-        <Link href={`/trainings`} className="w-12 h-full">
-          <Button
-            variant="ghost"
-            className="[&_svg]:size-7 w-full h-full cursor-pointer"
-          >
-            <IoIosArrowBack className="size-1 hover:opacity-80" />
-          </Button>
-        </Link>
-        <h1 className="font-bold w-full h-full md:ml-6 leading-12 text-[1.2rem] md:text-[1.4rem]">
-          {training?.exercise?.name ?? '種目名取得できず'}
-        </h1>
+      <div className="w-[95svw] md:w-180 mb-4">
+        <div className=" flex items-start">
+          <Link href={`/trainings`} className="w-12 h-full">
+            <Button
+              variant="ghost"
+              className="[&_svg]:size-7 w-full h-full cursor-pointer"
+            >
+              <IoIosArrowBack className="size-1 hover:opacity-80" />
+            </Button>
+          </Link>
+          <h1 className="font-bold w-full h-full md:ml-6 leading-12 text-[1.2rem] md:text-[1.4rem]">
+            {training?.exercise?.name ?? '種目名取得できず'}
+          </h1>
+        </div>
+        <div className="w-full flex flex-col ml-17">
+          {muscleGroups.map((muscleGroup) => (
+            <div key={muscleGroup.bodyArea} className="">
+              <span className="text-sm text-gray-700 mr-2">
+                {muscleGroup.bodyArea}
+              </span>
+              {muscleGroup.muscles.map((muscle) => (
+                <span key={muscle} className="text-xs text-gray-500 ml-2">
+                  {muscle}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <TrainingStats className="mt-5 mb-7">

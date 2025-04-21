@@ -10,6 +10,7 @@ import {
 import { TrainingReportProps } from '@/features/training/components/TrainingReport'
 import deleteTraining from '@/features/training/delete-training'
 import getTrainingsByDate, { Training } from '@/features/training/get-trainings'
+import { getBodyAreas } from '@/features/training/training-util'
 import Link from 'next/link'
 import { JSX, useCallback, useEffect, useState } from 'react'
 import { GoKebabHorizontal } from 'react-icons/go'
@@ -118,11 +119,7 @@ function generateTrainingElements({
   setIsTrainingDeleted: (isDeleted: boolean) => void
 }) {
   return trainings.map((training) => {
-    const bodyAreaList =
-      training.exercise?.muscles
-        .filter((muscle) => muscle.bodyArea?.name != null)
-        .map(({ bodyArea }) => bodyArea?.name || '') || []
-    const bodyAreaSet = new Set(bodyAreaList)
+    const bodyAreas = getBodyAreas(training)
     const trainingVolume = training.sets.reduce((volume, set) => {
       const weight = set.weight || 0
       const reps = set.reps || 0
@@ -134,7 +131,7 @@ function generateTrainingElements({
         key={training.id}
         trainingId={training.id}
         trainingName={training.exercise?.name || ''}
-        bodyAreas={[...bodyAreaSet]}
+        bodyAreas={bodyAreas}
         volume={trainingVolume}
         sets={training.sets.length}
         setIsTrainingDeleted={setIsTrainingDeleted}
