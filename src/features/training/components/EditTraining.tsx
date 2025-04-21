@@ -24,7 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Set } from '@prisma/client'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { IoIosArrowBack } from 'react-icons/io'
@@ -84,6 +84,10 @@ export default function EditTraining({
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(
     getTrainingStats({ sets }),
   )
+
+  useEffect(() => {
+    setTrainingStats(getTrainingStats({ sets }))
+  }, [sets])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -156,8 +160,6 @@ export default function EditTraining({
         ),
       )
     }
-
-    setTrainingStats(getTrainingStats({ sets }))
   }
 
   const bodyAreaDict: { [key: string]: string[] } = {}
