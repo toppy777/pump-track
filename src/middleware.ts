@@ -12,4 +12,8 @@ export default auth((req) => {
   ) {
     return Response.redirect(req.nextUrl.origin)
   }
+
+  if (req.auth && req.nextUrl.pathname === '/') {
+    return Response.redirect(req.nextUrl.origin + '/trainings')
+  }
 })
