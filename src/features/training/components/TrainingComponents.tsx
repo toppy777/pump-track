@@ -2,6 +2,7 @@
 
 import Calendar from '@/features/training/components/Calendar'
 import CreateTraining from '@/features/training/components/CreateTraining'
+import { useDate } from '@/features/training/components/DateContext'
 import TrainingList from '@/features/training/components/TrainingList'
 import TrainingReport, {
   TrainingReportProps,
@@ -18,7 +19,7 @@ export default function TrainingComponents({
   userId: string
   initialExercises: Exercise[]
 }) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const { selectedDate, setSelectedDate } = useDate()!
   const [shouldRefresh, setShouldRefresh] = useState(false)
   const [trainings, setTrainings] = useState<Training[]>([])
   const [trainingReportProps, setTrainingReportProps] =
