@@ -24,3 +24,23 @@ export default async function createTrainingSet({
     },
   })
 }
+
+export async function updateTrainingSet({
+  setId,
+  weight,
+  reps,
+}: {
+  setId: number
+  weight?: number
+  reps?: number
+}): Promise<Set> {
+  return await prisma.set.update({
+    where: {
+      id: setId,
+    },
+    data: {
+      weight: weight ?? null,
+      reps: reps ?? null,
+    },
+  })
+}
