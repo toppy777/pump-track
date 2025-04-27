@@ -284,15 +284,12 @@ export default function EditTraining({
               </div>
             ))}
           </div>
-          <button>
-            <IoAddCircleOutline className="size-1" />
-          </button>
           <Button
             type="button"
             onClick={handleAddField}
             variant="ghost"
             size="icon"
-            className="w-15 h-15 [&_svg]:size-15 cursor-pointer rounded-full"
+            className="w-15 h-15 [&_svg]:size-15 mt-2 mb-3 cursor-pointer rounded-full"
           >
             <IoAddCircleOutline className="size-1" />
           </Button>
