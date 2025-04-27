@@ -288,6 +288,7 @@ export default function EditTraining({
             <IoAddCircleOutline className="size-1" />
           </button>
           <Button
+            type="button"
             onClick={handleAddField}
             variant="ghost"
             size="icon"
