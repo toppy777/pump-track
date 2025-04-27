@@ -28,6 +28,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { IoIosArrowBack } from 'react-icons/io'
+import { IoAddCircleOutline } from 'react-icons/io5'
 import { MdOutlineSaveAlt } from 'react-icons/md'
 import { z } from 'zod'
 
@@ -283,7 +284,17 @@ export default function EditTraining({
               </div>
             ))}
           </div>
-          <Button onClick={handleAddField}>セット追加</Button>
+          <button>
+            <IoAddCircleOutline className="size-1" />
+          </button>
+          <Button
+            onClick={handleAddField}
+            variant="ghost"
+            size="icon"
+            className="w-15 h-15 [&_svg]:size-15 cursor-pointer rounded-full"
+          >
+            <IoAddCircleOutline className="size-1" />
+          </Button>
           <Button type="submit" className={`my-3 ${buttonStyles}`}>
             <MdOutlineSaveAlt color="white" className="size-1" />
             保存
