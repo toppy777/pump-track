@@ -150,7 +150,11 @@ export default function EditTraining({
           weight: set.weight,
           reps: set.reps,
         })
-        set.id = newSet.id
+        setSets((prevSets) =>
+          prevSets.map((s) =>
+            s === set ? { ...s, id: newSet.id } : s
+          )
+        )
       } else {
         if (set.id === undefined) {
           continue
