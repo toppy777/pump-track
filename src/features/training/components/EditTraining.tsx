@@ -16,18 +16,19 @@ import {
   TrainingStats,
   TrainingVolume,
 } from '@/features/training/components/TrainingStats'
-import createTrainingSet from '@/features/training/create-training-set'
+import createTrainingSet, {
+  updateTrainingSet,
+} from '@/features/training/create-training-set'
 import deleteTrainingSet from '@/features/training/delete-training-set'
 import { TrainingWithExerciseWithSet } from '@/features/training/get-trainings'
-import updateTrainingSet from '@/features/training/update-training-set'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Set } from '@prisma/client'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { GoKebabHorizontal } from 'react-icons/go'
 import { IoIosArrowBack } from 'react-icons/io'
+import { IoAddCircleOutline } from 'react-icons/io5'
 import { MdOutlineSaveAlt } from 'react-icons/md'
 import { z } from 'zod'
 
@@ -35,6 +36,18 @@ const formSchema = z.object({
   weight: z.number().min(0).max(1000),
   reps: z.number().min(0).max(1000),
 })
+
+type TrainingSet = {
+  id: number | undefined
+  weight: number
+  reps: number
+}
+
+type OriginalTrainingSet = {
+  id: number
+  weight: number
+  reps: number
+}
 
 type TrainingStats = {
   volume: number
@@ -47,19 +60,19 @@ type MuscleGroup = {
   muscles: string[]
 }
 
-function getTrainingVolume({ sets }: { sets: Set[] }): number {
+function getTrainingVolume({ sets }: { sets: TrainingSet[] }): number {
   return sets.reduce((acc, set) => acc + (set.weight ?? 0) * (set.reps ?? 0), 0)
 }
 
-function getTrainingSets({ sets }: { sets: Set[] }): number {
+function getTrainingSets({ sets }: { sets: TrainingSet[] }): number {
   return sets.length
 }
 
-function getTrainingReps({ sets }: { sets: Set[] }): number {
+function getTrainingReps({ sets }: { sets: TrainingSet[] }): number {
   return sets.reduce((acc, set) => acc + (set.reps ?? 0), 0)
 }
 
-function getTrainingStats({ sets }: { sets: Set[] }): TrainingStats {
+function getTrainingStats({ sets }: { sets: TrainingSet[] }): TrainingStats {
   return {
     volume: getTrainingVolume({ sets }),
     sets: getTrainingSets({ sets }),
@@ -73,14 +86,17 @@ export default function EditTraining({
   training: TrainingWithExerciseWithSet
 }) {
   const params = useParams()
-  const [sets, setSets] = useState(training.sets)
-  const [pendingSet, setPendingSet] = useState<{
-    weight?: number
-    reps?: number
-  }>({
-    weight: undefined,
-    reps: undefined,
-  })
+  const initialSets: OriginalTrainingSet[] = training.sets.map((set) => ({
+    id: set.id,
+    weight: set?.weight || 0,
+    reps: set?.reps || 0,
+  }))
+  const [sets, setSets] = useState<TrainingSet[]>(
+    initialSets ? initialSets.map((set) => ({ ...set })) : [],
+  )
+  const [originalSets, setOriginalSets] = useState<OriginalTrainingSet[]>(
+    initialSets ? initialSets.map((set) => ({ ...set })) : [],
+  )
   const [trainingStats, setTrainingStats] = useState<TrainingStats>(
     getTrainingStats({ sets }),
   )
@@ -97,24 +113,20 @@ export default function EditTraining({
     },
   })
 
-  // 入力が変更されたときに特定のセットを更新
-  function handleInputChange(
-    index: number,
-    field: 'weight' | 'reps',
-    value: string,
-  ) {
-    const updatedSets = [...sets]
-    updatedSets[index] = { ...updatedSets[index], [field]: Number(value) }
-    setSets(updatedSets)
+  const handleAddField = () => {
+    setSets((prev) => [...prev, { id: undefined, weight: 0, reps: 0 }])
   }
 
-  // 変更があったセットだけを抽出
-  function getUpdatedSets() {
-    return sets.filter(
-      (set, index) =>
-        (set.weight ?? null) !== (training.sets[index].weight ?? null) ||
-        (set.reps ?? null) !== (training.sets[index].reps ?? null),
-    )
+  const handleWeightChange = (index: number, weight: number) => {
+    const updatedSets = [...sets]
+    updatedSets[index].weight = weight
+    setSets(updatedSets || [])
+  }
+
+  const handleRepsChange = (index: number, reps: number) => {
+    const updatedSets = [...sets]
+    updatedSets[index].reps = reps
+    setSets(updatedSets || [])
   }
 
   // セットを削除する処理
@@ -122,44 +134,61 @@ export default function EditTraining({
     const setId = sets[index].id
     const updatedSets = sets.filter((_, i) => i !== index)
     setSets(updatedSets)
+    if (setId === undefined) {
+      return
+    }
     await deleteTrainingSet({ setId })
   }
 
-  // 新しいセットを追加する処理
-  function handleNewSetChange(field: 'weight' | 'reps', value: string) {
-    setPendingSet({
-      ...pendingSet,
-      [field]: value === '' ? undefined : Number(value),
-    })
-  }
-
   async function onSubmit() {
-    // 新規セット追加
-    if (pendingSet.weight !== undefined || pendingSet.reps !== undefined) {
-      if (Number.isNaN(Number(params.id))) {
-        return
+    for (const set of sets) {
+      // 元のデータには存在しない場合
+      if (!originalSets.some((originalSet) => originalSet.id === set.id)) {
+        // 新規追加
+        const newSet = await createTrainingSet({
+          trainingId: Number(params.id),
+          weight: set.weight,
+          reps: set.reps,
+        })
+        setSets((prevSets) =>
+          prevSets.map((s) =>
+            s === set ? { ...s, id: newSet.id } : s
+          )
+        )
+      } else {
+        if (set.id === undefined) {
+          continue
+        }
+        const originalSet = originalSets.find(
+          (originalSet) => originalSet.id === set.id,
+        )
+        // 元のデータと異なる場合
+        if (
+          set.weight !== originalSet?.weight ||
+          set.reps !== originalSet?.reps
+        ) {
+          // 更新
+          await updateTrainingSet({
+            setId: set.id,
+            weight: set.weight,
+            reps: set.reps,
+          })
+        }
       }
-      const trainingId = Number(params.id)
-      const createdNewSet = await createTrainingSet({
-        trainingId,
-        ...pendingSet,
-      })
-      setSets((prevSets) => [...prevSets, createdNewSet])
-      setPendingSet({ weight: undefined, reps: undefined })
     }
 
-    const updatedSets = getUpdatedSets()
-    if (updatedSets.length > 0) {
-      await Promise.all(
-        updatedSets.map((updatedSet) =>
-          updateTrainingSet({
-            id: updatedSet.id,
-            weight: updatedSet.weight ?? 0,
-            reps: updatedSet.reps ?? 0,
-          }),
-        ),
-      )
-    }
+    const originalSetsFromSets: OriginalTrainingSet[] = sets.map((set) => {
+      if (set.id === undefined) {
+        throw new Error('id is undefined')
+      }
+      return {
+        id: set.id,
+        weight: set.weight,
+        reps: set.reps,
+      }
+    })
+
+    setOriginalSets(originalSetsFromSets)
   }
 
   const muscleGroups: MuscleGroup[] = []
@@ -228,7 +257,7 @@ export default function EditTraining({
                   name="weight"
                   className={inputStyle}
                   onChange={(e) =>
-                    handleInputChange(index, 'weight', e.target.value)
+                    handleWeightChange(index, Number(e.target.value))
                   }
                 ></Input>
                 <span className="ml-2 mr-2 md:mr-8">kg</span>
@@ -239,7 +268,7 @@ export default function EditTraining({
                   name="reps"
                   className={inputStyle}
                   onChange={(e) =>
-                    handleInputChange(index, 'reps', e.target.value)
+                    handleRepsChange(index, Number(e.target.value))
                   }
                 ></Input>
                 <span className="mx-2">reps</span>
@@ -258,28 +287,16 @@ export default function EditTraining({
                 </DropdownMenu>
               </div>
             ))}
-            <div className="flex justify-center">
-              <Input
-                type="number"
-                placeholder="重量"
-                value={pendingSet.weight ?? ''}
-                name="weight"
-                className={inputStyle}
-                onChange={(e) => handleNewSetChange('weight', e.target.value)}
-              ></Input>
-              <span className="ml-2 mr-2 md:mr-8">kg</span>
-              <Input
-                type="number"
-                placeholder="レップ"
-                value={pendingSet.reps ?? ''}
-                name="reps"
-                className={inputStyle}
-                onChange={(e) => handleNewSetChange('reps', e.target.value)}
-              ></Input>
-              <span className="mx-2">reps</span>
-              <div className="w-8"></div>
-            </div>
           </div>
+          <Button
+            type="button"
+            onClick={handleAddField}
+            variant="ghost"
+            size="icon"
+            className="w-15 h-15 [&_svg]:size-15 mt-2 mb-3 cursor-pointer rounded-full"
+          >
+            <IoAddCircleOutline className="size-1" />
+          </Button>
           <Button type="submit" className={`my-3 ${buttonStyles}`}>
             <MdOutlineSaveAlt color="white" className="size-1" />
             保存
