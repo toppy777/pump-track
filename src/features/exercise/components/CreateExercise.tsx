@@ -15,8 +15,8 @@ import { createExercise } from '@/features/exercise/create-exercise-action'
 import getExercises, {
   ExerciseWithMuscles,
 } from '@/features/exercise/get-exercises'
+import { BodyAreasWithMuscles } from '@/features/muscle/get-muscles'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Muscle } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { IoAddCircleOutline } from 'react-icons/io5'
@@ -29,19 +29,19 @@ const formSchema = z.object({
 })
 
 export default function CreateExercise({
-  initialMuscles,
+  initialBodyAreasWithMuscles,
 }: {
-  initialMuscles: Muscle[]
+  initialBodyAreasWithMuscles: BodyAreasWithMuscles[]
 }) {
-  const [muscles, setMuscles] = useState<Muscle[]>([])
+  const [bodyAreas, setBodyAreas] = useState<BodyAreasWithMuscles[]>([])
   const [exercises, setExercises] = useState<ExerciseWithMuscles[]>([])
   const [createdExerciseId, setCreatedExerciseId] = useState<number | null>(
     null,
   )
 
   useEffect(() => {
-    setMuscles(initialMuscles)
-  }, [initialMuscles])
+    setBodyAreas(initialBodyAreasWithMuscles)
+  }, [initialBodyAreasWithMuscles])
 
   useEffect(() => {
     async function fetchExercises() {
@@ -114,46 +114,53 @@ export default function CreateExercise({
                     </FormItem>
                   )}
                 ></FormField>
-                <div className="flex flex-row md:flex-col flex-wrap">
-                  <FormLabel>
-                    <h2 className="text-[1.05rem] mt-3 mb-2">対象筋肉</h2>
-                  </FormLabel>
-                  {muscles?.map((muscle) => (
-                    <FormField
-                      key={muscle.id}
-                      control={form.control}
-                      name="muscles"
-                      render={({ field }) => {
-                        return (
-                          <FormItem className="flex">
-                            <FormControl>
-                              <Checkbox
-                                className="cursor-pointer ml-3 md:ml-0 mt-2.5 md:mt-1 align-bottom"
-                                checked={field.value?.includes(muscle.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...(field.value as number[]),
-                                        muscle.id,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== muscle.id,
-                                        ),
-                                      )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="cursor-pointer text-[1.2rem]">
-                              {muscle.name}
-                            </FormLabel>
-                            <FormMessage />
-                          </FormItem>
-                        )
-                      }}
-                    ></FormField>
-                  ))}
-                </div>
+                {bodyAreas?.map((bodyArea) => (
+                  <div
+                    className="flex flex-row md:flex-col flex-wrap"
+                    key={bodyArea.id}
+                  >
+                    <FormLabel>
+                      <h2 className="text-[1.05rem] mt-3 mb-1">
+                        {bodyArea.name}
+                      </h2>
+                    </FormLabel>
+                    {bodyArea.muscles.map((muscle) => (
+                      <FormField
+                        key={muscle.id}
+                        control={form.control}
+                        name="muscles"
+                        render={({ field }) => {
+                          return (
+                            <FormItem className="flex">
+                              <FormControl>
+                                <Checkbox
+                                  className="cursor-pointer ml-3 md:ml-0 mt-2.5 md:mt-1 align-bottom"
+                                  checked={field.value?.includes(muscle.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...(field.value as number[]),
+                                          muscle.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== muscle.id,
+                                          ),
+                                        )
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="cursor-pointer text-[1.2rem]">
+                                {muscle.name}
+                              </FormLabel>
+                              <FormMessage />
+                            </FormItem>
+                          )
+                        }}
+                      ></FormField>
+                    ))}
+                  </div>
+                ))}
                 <div className="flex justify-center">
                   <Button
                     type="submit"
