@@ -1,14 +1,22 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { Muscle } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
-export default async function getMuscles(): Promise<Muscle[]> {
-  const muscles = await prisma.muscle.findMany({
-    orderBy: {
-      name: 'asc',
+export type BodyAreasWithMuscles = Prisma.BodyAreaGetPayload<{
+  include: {
+    muscles: true
+  }
+}>
+
+export async function getBodyAreasWithMuslces(): Promise<
+  BodyAreasWithMuscles[]
+> {
+  const bodyAreas = await prisma.bodyArea.findMany({
+    include: {
+      muscles: true,
     },
   })
 
-  return muscles
+  return bodyAreas
 }
