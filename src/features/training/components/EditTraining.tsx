@@ -105,6 +105,25 @@ export default function EditTraining({
     setTrainingStats(getTrainingStats({ sets }))
   }, [sets])
 
+  useEffect(() => {
+    if (sets.filter((set) => set.id === undefined).length > 0) {
+      return
+    }
+
+    const originalSetsFromSets: OriginalTrainingSet[] = sets.map((set) => {
+      if (set.id === undefined) {
+        throw new Error('set.id is undefined')
+      }
+      return {
+        id: set.id,
+        weight: set.weight,
+        reps: set.reps,
+      }
+    })
+
+    setOriginalSets(() => [...originalSetsFromSets])
+  }, [sets])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -143,22 +162,17 @@ export default function EditTraining({
   async function onSubmit() {
     for (const set of sets) {
       // 元のデータには存在しない場合
-      if (!originalSets.some((originalSet) => originalSet.id === set.id)) {
+      if (set.id === undefined) {
         // 新規追加
         const newSet = await createTrainingSet({
           trainingId: Number(params.id),
           weight: set.weight,
           reps: set.reps,
         })
-        setSets((prevSets) =>
-          prevSets.map((s) =>
-            s === set ? { ...s, id: newSet.id } : s
-          )
-        )
+        setSets((prevSets) => {
+          return prevSets.map((s) => (s === set ? { ...s, id: newSet.id } : s))
+        })
       } else {
-        if (set.id === undefined) {
-          continue
-        }
         const originalSet = originalSets.find(
           (originalSet) => originalSet.id === set.id,
         )
@@ -176,19 +190,6 @@ export default function EditTraining({
         }
       }
     }
-
-    const originalSetsFromSets: OriginalTrainingSet[] = sets.map((set) => {
-      if (set.id === undefined) {
-        throw new Error('id is undefined')
-      }
-      return {
-        id: set.id,
-        weight: set.weight,
-        reps: set.reps,
-      }
-    })
-
-    setOriginalSets(originalSetsFromSets)
   }
 
   const muscleGroups: MuscleGroup[] = []
